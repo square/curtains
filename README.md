@@ -15,11 +15,27 @@ class ExampleApplication : Application() {
 
     Vasistas.addWindowListener(onWindowAddedListener { window ->
       window.addTouchEventListener { motionEvent ->
+        // Use this to log or intercept all touch events in the app.
         Log.d("ExampleApplication", "$window received $motionEvent")
-        false
+        false // consumed
       }
     })
   }
+}
+```
+
+```
+view.window?.let { window ->
+  window.addWindowFocusListener { hasFocus ->
+    // handle window focus changes without
+    // having to subclass view or activity
+  }
+}
+```
+
+```
+activity.window.onDecorViewReady { decorView ->
+  // Avoid the side effects of calling Window.getDecorView() too early
 }
 ```
 
