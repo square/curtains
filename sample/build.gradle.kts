@@ -1,0 +1,49 @@
+/*
+ * Copyright 2020 Square Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+  id("com.android.application")
+  kotlin("android")
+}
+
+android {
+  compileSdkVersion(30)
+
+  compileOptions {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+  }
+
+  defaultConfig {
+    minSdkVersion(21)
+    targetSdkVersion(30)
+    applicationId = "com.squareup.vasistas.sample"
+    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  }
+}
+
+dependencies {
+  implementation(project(":vasistas"))
+  implementation(Dependencies.AppCompat)
+  implementation(Dependencies.ConstraintLayout)
+
+  androidTestImplementation(Dependencies.InstrumentationTests.Core)
+  androidTestImplementation(Dependencies.InstrumentationTests.Espresso)
+  androidTestImplementation(Dependencies.InstrumentationTests.Rules)
+  androidTestImplementation(Dependencies.InstrumentationTests.JUnit)
+  androidTestImplementation(Dependencies.InstrumentationTests.Runner)
+  androidTestImplementation(Dependencies.Truth)
+}
