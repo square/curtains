@@ -24,7 +24,7 @@ class ExampleApplication : Application() {
 }
 ```
 
-```
+```kotlin
 view.window?.let { window ->
   window.addWindowFocusListener { hasFocus ->
     // handle window focus changes without
@@ -33,7 +33,7 @@ view.window?.let { window ->
 }
 ```
 
-```
+```kotlin
 activity.window.onDecorViewReady { decorView ->
   // Avoid the side effects of calling Window.getDecorView() too early
 }
