@@ -6,6 +6,22 @@
 
 Spy on your Android windows.
 
+```
+class ExampleApplication : Application() {
+  override fun onCreate() {
+    super.onCreate()
+
+    Vasistas.addWindowListener(onWindowAddedListener { window ->
+      window.addTouchEventListener { motionEvent ->
+        Log.d("ExampleApplication", "$window received $motionEvent")
+        false
+      }
+    })
+  }
+}
+```
+
+
 * [Usage](#usage)
 * [FAQ](#faq)
 * [License](#license)

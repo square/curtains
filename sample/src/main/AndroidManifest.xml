@@ -18,7 +18,9 @@
 
   <application
       android:label="Vasistas"
-      android:icon="@mipmap/ic_launcher">
+      android:icon="@mipmap/ic_launcher"
+      android:name=".ExampleApplication"
+      >
 
     <activity
         android:name=".MainActivity"

@@ -4,7 +4,7 @@ import android.view.View
 import vasistas.RootViewListener
 import java.util.concurrent.CopyOnWriteArrayList
 
-internal class RootViewsSpy {
+internal class RootViewsSpy private constructor(){
 
   val listeners = CopyOnWriteArrayList<RootViewListener>()
 
