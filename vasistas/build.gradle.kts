@@ -15,7 +15,7 @@ android {
   }
 
   defaultConfig {
-    minSdkVersion(17)
+    minSdkVersion(19)
     targetSdkVersion(30)
     versionCode = 1
     versionName = "1.0"
@@ -37,15 +37,7 @@ tasks.withType<KotlinCompile> {
         // allow-jvm-ir-dependencies is required to consume binaries built with the IR backend.
         // It doesn't change the bytecode that gets generated for this module.
         "-Xallow-jvm-ir-dependencies",
-        "-Xopt-in=kotlin.RequiresOptIn",
-
-        // Require explicit public modifiers and types.
-        // TODO this should be moved to a top-level `kotlin { explicitApi() }` once that's working
-        //  for android projects, see https://youtrack.jetbrains.com/issue/KT-37652.
-        "-Xexplicit-api=strict".takeUnless {
-          // Tests aren't part of the public API, don't turn explicit API mode on for them.
-          name.contains("test", ignoreCase = true)
-        }
+        "-Xopt-in=kotlin.RequiresOptIn"
     )
   }
 }
