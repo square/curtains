@@ -39,6 +39,27 @@ activity.window.onDecorViewReady { decorView ->
 }
 ```
 
+```kotlin
+class ExampleApplication : Application() {
+  override fun onCreate() {
+    super.onCreate()
+
+    val handler = Handler()
+
+    Vasistas.addWindowListener(onWindowAddedListener { window ->
+      val windowAddedAt = SystemClock.uptimeMillis()
+      window.onNextDraw {
+        // Post at front to fully account for drawing time.
+        handler.postAtFrontOfQueue {
+          val duration = SystemClock.uptimeMillis() - windowAddedAt
+          Log.d("ExampleApplication", "$window fully drawn in $duration ms")
+        }
+      }
+    })
+  }
+}
+```
+
 
 * [Usage](#usage)
 * [FAQ](#faq)

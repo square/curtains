@@ -4,6 +4,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import vasistas.internal.DecorViewSpy
+import vasistas.internal.NextDrawListener.Companion.onNextDraw
 import vasistas.internal.WindowDelegateCallback.Companion.wrapCallback
 import vasistas.internal.checkMainThread
 
@@ -81,5 +82,11 @@ fun Window.onDecorViewReady(block: (View) -> Unit) {
         removeContentChangedListener(this)
       }
     })
+  }
+}
+
+fun Window.onNextDraw(block: () -> Unit) {
+  onDecorViewReady { decorView ->
+    decorView.onNextDraw(block)
   }
 }
