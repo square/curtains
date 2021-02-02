@@ -2,61 +2,57 @@ package vasistas.internal
 
 import android.view.MotionEvent
 import android.view.Window
-import java.util.concurrent.CopyOnWriteArrayList
+import vasistas.DispatchState
+import vasistas.DispatchState.CONSUMED
+import vasistas.FocusState
 
 internal class WindowDelegateCallback constructor(
-  private val delegate: Window.Callback
+  private val delegate: Window.Callback,
+  private val listeners: WindowListeners
 ) : Window.Callback by delegate {
-
-  val dispatchTouchEventListener = CopyOnWriteArrayList<(MotionEvent) -> Boolean>()
-
-  val afterDispatchTouchEventListener = CopyOnWriteArrayList<(MotionEvent, Boolean) -> Unit>()
-
-  val onContentChangedListeners = CopyOnWriteArrayList<() -> Unit>()
-
-  val onWindowFocusChangedListeners = CopyOnWriteArrayList<(Boolean) -> Unit>()
 
   override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
     return if (event != null) {
-      val consumedBy = dispatchTouchEventListener.firstOrNull {
-        it(event)
+      val consumedBy = listeners.beforeDispatchTouchEventListeners.firstOrNull {
+        it(event).consumed
       }
-      val consumed = if (consumedBy == null) {
-        delegate.dispatchTouchEvent(event)
+      val dispatchState = if (consumedBy == null) {
+        DispatchState.from(delegate.dispatchTouchEvent(event))
       } else {
-        true
+        CONSUMED
       }
-      afterDispatchTouchEventListener.forEach { it(event, consumed) }
-      consumed
+      listeners.afterDispatchTouchEventListeners.forEach { it(event, dispatchState) }
+      dispatchState.consumed
     } else {
       delegate.dispatchTouchEvent(event)
     }
   }
 
   override fun onContentChanged() {
-    onContentChangedListeners.forEach { it() }
+    listeners.onContentChangedListeners.forEach { it() }
     delegate.onContentChanged()
   }
 
   override fun onWindowFocusChanged(hasFocus: Boolean) {
-    onWindowFocusChangedListeners.forEach { it(hasFocus) }
+    val state = FocusState.from(hasFocus)
+    listeners.onWindowFocusChangedListeners.forEach { it(state) }
     delegate.onWindowFocusChanged(hasFocus)
   }
 
   companion object {
-
-    internal fun Window.wrapCallback(): WindowDelegateCallback? {
-      return when (val currentCallback = callback) {
-        // We expect a window to always have a default callback
-        // that we can delegate to, but who knows what apps can be up to.
-        null -> null
-        is WindowDelegateCallback -> currentCallback
-        else -> {
-          val newCallback = WindowDelegateCallback(currentCallback)
-          callback = newCallback
-          newCallback
+    internal val Window.listeners: WindowListeners
+      get() {
+        return when (val currentCallback = callback) {
+          // We expect a window to always have a default callback
+          // that we can delegate to, but who knows what apps can be up to.
+          null -> WindowListeners()
+          is WindowDelegateCallback -> currentCallback.listeners
+          else -> {
+            WindowListeners().apply {
+              callback = WindowDelegateCallback(currentCallback, this)
+            }
+          }
         }
       }
-    }
   }
 }

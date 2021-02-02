@@ -2,31 +2,35 @@
 
 # Vasistas
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.squareup.vasistas/vasistas.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.squareup.vasistas%22)
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
-![Android CI](https://github.com/square/vasistas/workflows/Android%20CI/badge.svg)
-
-Spy on your Android windows.
+_Was ist das?_ The missing Android Window APIs!
 
 ```kotlin
 class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 
-    Vasistas.addWindowListener(onWindowAddedListener { window ->
-      window.addTouchEventListener { motionEvent ->
-        // Use this to log or intercept all touch events in the app.
+    class LoggingListener(val window: Window) : (MotionEvent) -> DispatchState {
+      override fun invoke(motionEvent: MotionEvent): DispatchState {
         Log.d("ExampleApplication", "$window received $motionEvent")
-        false // consumed
+        return NOT_CONSUMED
       }
-    })
+    }
+
+    Vasistas.windowAttachListeners += { window, attachState ->
+      if (attachState.attached) {
+        val listeners = window.beforeDispatchTouchEventListeners
+        if (listeners.none { it is LoggingListener }) {
+          window.beforeDispatchTouchEventListeners += LoggingListener(window)
+        }
+      }
+    }
   }
 }
 ```
 
 ```kotlin
-view.window?.let { window ->
-  window.addWindowFocusListener { hasFocus ->
+view.window!!.onWindowFocusChangedListeners += { focusState ->
+  if (focusState.focused) {
     // handle window focus changes without
     // having to subclass view or activity
   }
@@ -46,16 +50,18 @@ class ExampleApplication : Application() {
 
     val handler = Handler()
 
-    Vasistas.addWindowListener(onWindowAddedListener { window ->
-      val windowAddedAt = SystemClock.uptimeMillis()
-      window.onNextDraw {
-        // Post at front to fully account for drawing time.
-        handler.postAtFrontOfQueue {
-          val duration = SystemClock.uptimeMillis() - windowAddedAt
-          Log.d("ExampleApplication", "$window fully drawn in $duration ms")
+    Vasistas.windowAttachListeners += { window, attachState ->
+      if (attachState.attached) {
+        val windowAddedAt = SystemClock.uptimeMillis()
+        window.onNextDraw {
+          // Post at front to fully account for drawing time.
+          handler.postAtFrontOfQueue {
+            val duration = SystemClock.uptimeMillis() - windowAddedAt
+            Log.d("ExampleApplication", "$window fully drawn in $duration ms")
+          }
         }
       }
-    })
+    }
   }
 }
 ```

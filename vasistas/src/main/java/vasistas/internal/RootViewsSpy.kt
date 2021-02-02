@@ -1,25 +1,24 @@
 package vasistas.internal
 
 import android.view.View
-import vasistas.RootViewListener
+import vasistas.AttachState
 import java.util.concurrent.CopyOnWriteArrayList
 
 internal class RootViewsSpy private constructor(){
 
-  val listeners = CopyOnWriteArrayList<RootViewListener>()
+  val listeners = CopyOnWriteArrayList<(View, AttachState) -> Unit>()
 
-  val all: List<View>
-    get() = delegatingViewList
+  fun rootViewListCopy() = delegatingViewList.toList()
 
-  private val delegatingViewList = object : ArrayList<View>() {
+  val delegatingViewList = object : ArrayList<View>() {
     override fun add(element: View): Boolean {
-      listeners.forEach { it.onRootViewAdded(element) }
+      listeners.forEach { it(element, AttachState.ATTACHED) }
       return super.add(element)
     }
 
     override fun removeAt(index: Int): View {
       val removedView = super.removeAt(index)
-      listeners.forEach { it.onRootViewRemoved(removedView) }
+      listeners.forEach { it(removedView, AttachState.DETACHED) }
       return removedView
     }
   }

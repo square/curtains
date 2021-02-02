@@ -5,7 +5,7 @@ import android.view.View
 import android.view.Window
 import vasistas.internal.DecorViewSpy
 import vasistas.internal.NextDrawListener.Companion.onNextDraw
-import vasistas.internal.WindowDelegateCallback.Companion.wrapCallback
+import vasistas.internal.WindowDelegateCallback.Companion.listeners
 import vasistas.internal.checkMainThread
 
 val View.window: Window?
@@ -14,79 +14,49 @@ val View.window: Window?
     return DecorViewSpy.pullDecorViewWindow(rootView)
   }
 
-fun Window.addTouchEventListener(block: (MotionEvent) -> Boolean) {
-  checkMainThread()
-  wrapCallback()?.let {
-    it.dispatchTouchEventListener += block
+val Window.beforeDispatchTouchEventListeners: MutableList<(MotionEvent) -> DispatchState>
+  get() {
+    checkMainThread()
+    return listeners.beforeDispatchTouchEventListeners
   }
-}
 
-fun Window.removeTouchEventListener(block: (MotionEvent) -> Boolean) {
-  checkMainThread()
-  wrapCallback()?.let {
-    it.dispatchTouchEventListener -= block
+val Window.afterDispatchTouchEventListeners: MutableList<(MotionEvent, DispatchState) -> Unit>
+  get() {
+    checkMainThread()
+    return listeners.afterDispatchTouchEventListeners
   }
-}
 
-fun Window.addAfterDispatchTouchEventListener(block: (MotionEvent, Boolean) -> Unit) {
-  checkMainThread()
-  wrapCallback()?.let {
-    it.afterDispatchTouchEventListener += block
+val Window.onContentChangedListeners: MutableList<() -> Unit>
+  get() {
+    checkMainThread()
+    return listeners.onContentChangedListeners
   }
-}
 
-fun Window.removeAfterDispatchTouchEventListener(block: (MotionEvent, Boolean) -> Unit) {
-  checkMainThread()
-  wrapCallback()?.let {
-    it.afterDispatchTouchEventListener -= block
+val Window.onWindowFocusChangedListeners: MutableList<(FocusState) -> Unit>
+  get() {
+    checkMainThread()
+    return listeners.onWindowFocusChangedListeners
   }
-}
 
-fun Window.addContentChangedListener(block: () -> Unit) {
-  checkMainThread()
-  wrapCallback()?.let {
-    it.onContentChangedListeners += block
-  }
-}
-
-fun Window.removeContentChangedListener(block: () -> Unit) {
-  checkMainThread()
-  wrapCallback()?.let {
-    it.onContentChangedListeners -= block
-  }
-}
-
-fun Window.addWindowFocusListener(block: (Boolean) -> Unit) {
-  checkMainThread()
-  wrapCallback()?.let {
-    it.onWindowFocusChangedListeners += block
-  }
-}
-
-fun Window.removeWindowFocusListener(block: (Boolean) -> Unit) {
-  checkMainThread()
-  wrapCallback()?.let {
-    it.onWindowFocusChangedListeners -= block
-  }
-}
-
-fun Window.onDecorViewReady(block: (View) -> Unit) {
+fun Window.onDecorViewReady(onDecorViewReady: (View) -> Unit) {
   checkMainThread()
   val decorViewOrNull = peekDecorView()
   if (decorViewOrNull != null) {
-    block(decorViewOrNull)
+    onDecorViewReady(decorViewOrNull)
   } else {
-    addContentChangedListener(object: () -> Unit {
-      override fun invoke() {
-        block(peekDecorView())
-        removeContentChangedListener(this)
+    listeners.run {
+      onContentChangedListeners += object : () -> Unit {
+        override fun invoke() {
+          onDecorViewReady(peekDecorView())
+          onContentChangedListeners -= this
+        }
       }
-    })
+    }
   }
 }
 
-fun Window.onNextDraw(block: () -> Unit) {
+fun Window.onNextDraw(onNextDraw: () -> Unit) {
   onDecorViewReady { decorView ->
-    decorView.onNextDraw(block)
+    decorView.onNextDraw(onNextDraw)
   }
 }

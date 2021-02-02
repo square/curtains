@@ -2,31 +2,26 @@ package vasistas.internal
 
 import android.view.View
 import android.view.Window
-import vasistas.RootViewListener
-import vasistas.WindowListener
+import vasistas.AttachState
 import vasistas.window
 import java.util.concurrent.CopyOnWriteArrayList
 
 internal class WindowSpy private constructor(private val rootViewsSpy: RootViewsSpy) :
-  RootViewListener {
+  (View, AttachState) -> Unit {
 
-  val listeners = CopyOnWriteArrayList<WindowListener>()
+  val listeners = CopyOnWriteArrayList<(Window, AttachState) -> Unit>()
 
-  val all: List<Window>
-    get() = rootViewsSpy.all.mapNotNull { it.window }
-
-  override fun onRootViewAdded(view: View) {
-    view.window?.let { window ->
-      listeners.forEach {
-        it.onWindowAdded(window)
-      }
-    }
+  fun windowListCopy() = rootViewsSpy.delegatingViewList.mapNotNull { view ->
+    DecorViewSpy.pullDecorViewWindow(view)
   }
 
-  override fun onRootViewRemoved(view: View) {
+  override fun invoke(
+    view: View,
+    attachState: AttachState
+  ) {
     view.window?.let { window ->
       listeners.forEach {
-        it.onWindowRemoved(window)
+        it(window, attachState)
       }
     }
   }
@@ -36,4 +31,6 @@ internal class WindowSpy private constructor(private val rootViewsSpy: RootViews
       return WindowSpy(rootViewsSpy).apply { rootViewsSpy.listeners += this }
     }
   }
+
+
 }
