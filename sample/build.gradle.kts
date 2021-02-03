@@ -30,13 +30,13 @@ android {
   defaultConfig {
     minSdkVersion(21)
     targetSdkVersion(30)
-    applicationId = "com.squareup.vasistas.sample"
+    applicationId = "com.squareup.curtains.sample"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 }
 
 dependencies {
-  implementation(project(":vasistas"))
+  implementation(project(":curtains"))
   implementation(Dependencies.AppCompat)
   implementation(Dependencies.ConstraintLayout)
 

@@ -1,6 +1,6 @@
-rootProject.name = "vasistas"
+rootProject.name = "curtains"
 
 include(
-    ":vasistas",
+    ":curtains",
     ":sample"
 )
