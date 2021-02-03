@@ -1,6 +1,6 @@
 ## ⚠️ ATTENTION: this library is in early development, there are no builds available yet. ⚠️
 
-# Vasistas
+# Curtains
 
 _Was ist das?_ The missing Android Window APIs!
 
@@ -16,7 +16,7 @@ class ExampleApplication : Application() {
       }
     }
 
-    Vasistas.windowAttachListeners += { window, attachState ->
+    Curtains.windowAttachListeners += { window, attachState ->
       if (attachState.attached) {
         val listeners = window.beforeDispatchTouchEventListeners
         if (listeners.none { it is LoggingListener }) {
@@ -50,7 +50,7 @@ class ExampleApplication : Application() {
 
     val handler = Handler()
 
-    Vasistas.windowAttachListeners += { window, attachState ->
+    Curtains.windowAttachListeners += { window, attachState ->
       if (attachState.attached) {
         val windowAddedAt = SystemClock.uptimeMillis()
         window.onNextDraw {
@@ -73,11 +73,11 @@ class ExampleApplication : Application() {
 
 ## Usage
 
-Add the `vasistas` dependency to your app's `build.gradle` file:
+Add the `curtains` dependency to your app's `build.gradle` file:
 
 ```gradle
 dependencies {
-  implementation 'com.squareup.vasistas:vasistas:1.0'
+  implementation 'com.squareup.curtains:curtains:1.0'
 }
 ```
 

@@ -1,24 +1,21 @@
-package com.squareup.vasistas.sample
+package com.squareup.curtains.sample
 
 import android.app.Application
 import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.view.MotionEvent
 import android.view.Window
-import vasistas.AttachState.ATTACHED
-import vasistas.AttachState.DETACHED
-import vasistas.DispatchState
-import vasistas.DispatchState.NOT_CONSUMED
-import vasistas.Vasistas
-import vasistas.beforeDispatchTouchEventListeners
-import vasistas.onNextDraw
-import vasistas.onWindowFocusChangedListeners
+import curtains.DispatchState
+import curtains.DispatchState.NOT_CONSUMED
+import curtains.Curtains
+import curtains.beforeDispatchTouchEventListeners
+import curtains.onNextDraw
 
 class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-
 
     class LoggingListener(val window: Window) : (MotionEvent) -> DispatchState {
       override fun invoke(motionEvent: MotionEvent): DispatchState {
@@ -27,7 +24,7 @@ class ExampleApplication : Application() {
       }
     }
 
-    Vasistas.windowAttachListeners += { window, attachState ->
+    Curtains.windowAttachListeners += { window, attachState ->
       if (attachState.attached) {
         val listeners = window.beforeDispatchTouchEventListeners
         if (listeners.none { it is LoggingListener }) {
@@ -36,9 +33,9 @@ class ExampleApplication : Application() {
       }
     }
 
-    val handler = Handler()
+    val handler = Handler(Looper.getMainLooper())
 
-    Vasistas.windowAttachListeners += { window, attachState ->
+    Curtains.windowAttachListeners += { window, attachState ->
       if (attachState.attached) {
         val windowAddedAt = SystemClock.uptimeMillis()
         window.onNextDraw {
