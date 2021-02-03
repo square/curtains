@@ -2,6 +2,7 @@ package com.squareup.curtains.sample
 
 import android.app.Application
 import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.view.MotionEvent
@@ -15,7 +16,6 @@ import curtains.onNextDraw
 class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
-
 
     class LoggingListener(val window: Window) : (MotionEvent) -> DispatchState {
       override fun invoke(motionEvent: MotionEvent): DispatchState {
@@ -33,7 +33,7 @@ class ExampleApplication : Application() {
       }
     }
 
-    val handler = Handler()
+    val handler = Handler(Looper.getMainLooper())
 
     Curtains.windowAttachListeners += { window, attachState ->
       if (attachState.attached) {

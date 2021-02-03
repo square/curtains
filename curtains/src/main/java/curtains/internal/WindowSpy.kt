@@ -31,6 +31,4 @@ internal class WindowSpy private constructor(private val rootViewsSpy: RootViews
       return WindowSpy(rootViewsSpy).apply { rootViewsSpy.listeners += this }
     }
   }
-
-
 }

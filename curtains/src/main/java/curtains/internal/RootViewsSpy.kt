@@ -4,7 +4,7 @@ import android.view.View
 import curtains.AttachState
 import java.util.concurrent.CopyOnWriteArrayList
 
-internal class RootViewsSpy private constructor(){
+internal class RootViewsSpy private constructor() {
 
   val listeners = CopyOnWriteArrayList<(View, AttachState) -> Unit>()
 

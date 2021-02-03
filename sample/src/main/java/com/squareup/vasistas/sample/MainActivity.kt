@@ -14,7 +14,6 @@ class MainActivity : Activity() {
     val view = findViewById<View>(R.id.gone)
     view.window!!.onWindowFocusChangedListeners += { focusState ->
       if (focusState.focused) {
-
       }
     }
   }

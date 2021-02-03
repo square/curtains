@@ -93,7 +93,10 @@ subprojects {
         setOf(
             // IntelliJ refuses to sort imports correctly.
             // This is a known issue: https://github.com/pinterest/ktlint/issues/527
-            "import-ordering"
+            "import-ordering",
+            "indent",
+            "parameter-list-wrapping",
+            "final-newline"
         )
     )
   }

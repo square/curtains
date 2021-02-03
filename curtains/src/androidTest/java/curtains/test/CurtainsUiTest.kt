@@ -5,6 +5,5 @@ import org.junit.Test
 class CurtainsUiTest {
 
   @Test fun todo() {
-
   }
 }
