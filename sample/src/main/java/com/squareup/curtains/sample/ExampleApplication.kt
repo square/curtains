@@ -7,9 +7,9 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.MotionEvent
 import android.view.Window
+import curtains.Curtains
 import curtains.DispatchState
 import curtains.DispatchState.NOT_CONSUMED
-import curtains.Curtains
 import curtains.beforeDispatchTouchEventListeners
 import curtains.onNextDraw
 
