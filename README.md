@@ -9,18 +9,10 @@ class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 
-    class LoggingListener(val window: Window) : (MotionEvent) -> DispatchState {
-      override fun invoke(motionEvent: MotionEvent): DispatchState {
-        Log.d("ExampleApplication", "$window received $motionEvent")
-        return NOT_CONSUMED
-      }
-    }
-
-    Curtains.windowAttachListeners += { window, attachState ->
-      if (attachState.attached) {
-        val listeners = window.beforeDispatchTouchEventListeners
-        if (listeners.none { it is LoggingListener }) {
-          window.beforeDispatchTouchEventListeners += LoggingListener(window)
+    Curtains.windowAttachStateListeners += WindowAttachedListener { window ->
+      if (window.decorView.windowAttachCount == 0) {
+        window.touchEventInterceptors += TouchEventListener { motionEvent ->
+          Log.d("ExampleApplication", "$window received $motionEvent")
         }
       }
     }
@@ -29,10 +21,16 @@ class ExampleApplication : Application() {
 ```
 
 ```kotlin
-view.window!!.onWindowFocusChangedListeners += { focusState ->
-  if (focusState.focused) {
-    // handle window focus changes without
-    // having to subclass view or activity
+class MainActivity : Activity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+
+    window.onContentChangedListeners += OnContentChangedListener {
+      val newContentView = findViewById<View>(android.R.id.content)
+      Log.d("MainActivity", "Content changed to $newContentView")
+    }
+
+    setContentView(R.layout.main)
   }
 }
 ```
@@ -48,17 +46,15 @@ class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 
-    val handler = Handler()
+    val handler = Handler(Looper.getMainLooper())
 
-    Curtains.windowAttachListeners += { window, attachState ->
-      if (attachState.attached) {
-        val windowAddedAt = SystemClock.uptimeMillis()
-        window.onNextDraw {
-          // Post at front to fully account for drawing time.
-          handler.postAtFrontOfQueue {
-            val duration = SystemClock.uptimeMillis() - windowAddedAt
-            Log.d("ExampleApplication", "$window fully drawn in $duration ms")
-          }
+    Curtains.windowAttachStateListeners += WindowAttachedListener { window ->
+      val windowAddedAt = SystemClock.uptimeMillis()
+      window.onNextDraw {
+        // Post at front to fully account for drawing time.
+        handler.postAtFrontOfQueue {
+          val duration = SystemClock.uptimeMillis() - windowAddedAt
+          Log.d("ExampleApplication", "$window fully drawn in $duration ms")
         }
       }
     }

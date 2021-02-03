@@ -45,15 +45,16 @@ object Curtains {
       return windowSpy.windowListCopy()
     }
 
-  val rootViewAttachListeners: MutableList<(View, AttachState) -> Unit>
+  val rootViewAttachStateListeners: MutableList<ViewAttachStateListener>
     get() {
       checkMainThread()
       return rootViewsSpy.listeners
     }
 
-  val windowAttachListeners: MutableList<(Window, AttachState) -> Unit>
+  val windowAttachStateListeners: MutableList<WindowAttachStateListener>
     get() {
       checkMainThread()
       return windowSpy.listeners
     }
 }
+

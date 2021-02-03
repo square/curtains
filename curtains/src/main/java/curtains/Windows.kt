@@ -1,6 +1,6 @@
 package curtains
 
-import android.view.MotionEvent
+import android.view.JavaViewSpy
 import android.view.View
 import android.view.Window
 import curtains.internal.DecorViewSpy
@@ -14,28 +14,16 @@ val View.window: Window?
     return DecorViewSpy.pullDecorViewWindow(rootView)
   }
 
-val Window.beforeDispatchTouchEventListeners: MutableList<(MotionEvent) -> DispatchState>
+val Window.touchEventInterceptors: MutableList<TouchEventInterceptor>
   get() {
     checkMainThread()
-    return listeners.beforeDispatchTouchEventListeners
+    return listeners.touchEventInterceptors
   }
 
-val Window.afterDispatchTouchEventListeners: MutableList<(MotionEvent, DispatchState) -> Unit>
-  get() {
-    checkMainThread()
-    return listeners.afterDispatchTouchEventListeners
-  }
-
-val Window.onContentChangedListeners: MutableList<() -> Unit>
+val Window.onContentChangedListeners: MutableList<OnContentChangedListener>
   get() {
     checkMainThread()
     return listeners.onContentChangedListeners
-  }
-
-val Window.onWindowFocusChangedListeners: MutableList<(FocusState) -> Unit>
-  get() {
-    checkMainThread()
-    return listeners.onWindowFocusChangedListeners
   }
 
 fun Window.onDecorViewReady(onDecorViewReady: (View) -> Unit) {
@@ -45,8 +33,8 @@ fun Window.onDecorViewReady(onDecorViewReady: (View) -> Unit) {
     onDecorViewReady(decorViewOrNull)
   } else {
     listeners.run {
-      onContentChangedListeners += object : () -> Unit {
-        override fun invoke() {
+      onContentChangedListeners += object : OnContentChangedListener {
+        override fun onContentChanged() {
           onDecorViewReady(peekDecorView())
           onContentChangedListeners -= this
         }
@@ -60,3 +48,9 @@ fun Window.onNextDraw(onNextDraw: () -> Unit) {
     decorView.onNextDraw(onNextDraw)
   }
 }
+
+val View.windowAttachCount: Int
+  get() {
+    checkMainThread()
+    return JavaViewSpy.windowAttachCount(this)
+  }

@@ -3,8 +3,6 @@ package curtains.internal
 import android.view.MotionEvent
 import android.view.Window
 import curtains.DispatchState
-import curtains.DispatchState.CONSUMED
-import curtains.FocusState
 
 internal class WindowDelegateCallback constructor(
   private val delegate: Window.Callback,
@@ -13,30 +11,33 @@ internal class WindowDelegateCallback constructor(
 
   override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
     return if (event != null) {
-      val consumedBy = listeners.beforeDispatchTouchEventListeners.firstOrNull {
-        it(event).consumed
+      val iterator = listeners.touchEventInterceptors.iterator()
+
+      val proceed: (MotionEvent) -> DispatchState = object : (MotionEvent) -> DispatchState {
+        override fun invoke(interceptedEvent: MotionEvent): DispatchState {
+          return if (iterator.hasNext()) {
+            val nextInterceptor = iterator.next()
+            nextInterceptor.intercept(interceptedEvent, this)
+          } else {
+            DispatchState.from(delegate.dispatchTouchEvent(interceptedEvent))
+          }
+        }
       }
-      val dispatchState = if (consumedBy == null) {
-        DispatchState.from(delegate.dispatchTouchEvent(event))
+
+      if (iterator.hasNext()) {
+        val firstInterceptor = iterator.next()
+        firstInterceptor.intercept(event, proceed)
       } else {
-        CONSUMED
-      }
-      listeners.afterDispatchTouchEventListeners.forEach { it(event, dispatchState) }
-      dispatchState.consumed
+        DispatchState.from(delegate.dispatchTouchEvent(event))
+      }.consumed
     } else {
       delegate.dispatchTouchEvent(event)
     }
   }
 
   override fun onContentChanged() {
-    listeners.onContentChangedListeners.forEach { it() }
+    listeners.onContentChangedListeners.forEach { it.onContentChanged() }
     delegate.onContentChanged()
-  }
-
-  override fun onWindowFocusChanged(hasFocus: Boolean) {
-    val state = FocusState.from(hasFocus)
-    listeners.onWindowFocusChangedListeners.forEach { it(state) }
-    delegate.onWindowFocusChanged(hasFocus)
   }
 
   companion object {
