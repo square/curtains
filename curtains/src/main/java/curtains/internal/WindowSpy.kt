@@ -1,14 +1,15 @@
 package curtains.internal
 
 import android.view.View
-import android.view.Window
-import com.squareup.curtains.R
-import curtains.AttachState
 import curtains.ViewAttachStateListener
 import curtains.WindowAttachStateListener
 import curtains.window
 import java.util.concurrent.CopyOnWriteArrayList
 
+/**
+ * Builds on top of [RootViewsSpy] and [DecorViewSpy] to listen to updates to the
+ * list of attached windows.
+ */
 internal class WindowSpy private constructor(private val rootViewsSpy: RootViewsSpy) :
   ViewAttachStateListener {
 
@@ -20,15 +21,11 @@ internal class WindowSpy private constructor(private val rootViewsSpy: RootViews
 
   override fun onViewAttachStateChanged(
     view: View,
-    attachState: AttachState
+    attached: Boolean
   ) {
-    if (attachState.attached) {
-      val previousAttachCount = view.getTag(R.id.curtain_window_attach_count) as Int? ?: 0
-      view.setTag(R.id.curtain_window_attach_count, previousAttachCount + 1)
-    }
     view.window?.let { window ->
       listeners.forEach {
-        it.onWindowAttachStateChanged(window, attachState)
+        it.onWindowAttachStateChanged(window, attached)
       }
     }
   }

@@ -3,7 +3,12 @@ package curtains.internal
 import android.view.MotionEvent
 import android.view.Window
 import curtains.DispatchState
+import curtains.DispatchState.Consumed
 
+/**
+ * Replaces the default Window callback to allows adding listeners / interceptors
+ * for interesting events.
+ */
 internal class WindowDelegateCallback constructor(
   private val delegate: Window.Callback,
   private val listeners: WindowListeners
@@ -13,7 +18,7 @@ internal class WindowDelegateCallback constructor(
     return if (event != null) {
       val iterator = listeners.touchEventInterceptors.iterator()
 
-      val proceed: (MotionEvent) -> DispatchState = object : (MotionEvent) -> DispatchState {
+      val dispatch: (MotionEvent) -> DispatchState = object : (MotionEvent) -> DispatchState {
         override fun invoke(interceptedEvent: MotionEvent): DispatchState {
           return if (iterator.hasNext()) {
             val nextInterceptor = iterator.next()
@@ -26,10 +31,10 @@ internal class WindowDelegateCallback constructor(
 
       if (iterator.hasNext()) {
         val firstInterceptor = iterator.next()
-        firstInterceptor.intercept(event, proceed)
+        firstInterceptor.intercept(event, dispatch)
       } else {
         DispatchState.from(delegate.dispatchTouchEvent(event))
-      }.consumed
+      } is Consumed
     } else {
       delegate.dispatchTouchEvent(event)
     }
@@ -41,7 +46,7 @@ internal class WindowDelegateCallback constructor(
   }
 
   companion object {
-    internal val Window.listeners: WindowListeners
+    val Window.listeners: WindowListeners
       get() {
         return when (val currentCallback = callback) {
           // We expect a window to always have a default callback

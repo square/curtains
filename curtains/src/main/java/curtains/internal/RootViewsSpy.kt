@@ -1,11 +1,12 @@
 package curtains.internal
 
 import android.view.View
-import curtains.AttachState
 import curtains.ViewAttachStateListener
-import curtains.WindowAttachStateListener
 import java.util.concurrent.CopyOnWriteArrayList
 
+/**
+ * A utility that holds the list of root views that WindowManager updates.
+ */
 internal class RootViewsSpy private constructor() {
 
   val listeners = CopyOnWriteArrayList<ViewAttachStateListener>()
@@ -14,13 +15,13 @@ internal class RootViewsSpy private constructor() {
 
   val delegatingViewList = object : ArrayList<View>() {
     override fun add(element: View): Boolean {
-      listeners.forEach { it.onViewAttachStateChanged(element, AttachState.ATTACHED) }
+      listeners.forEach { it.onViewAttachStateChanged(element, true) }
       return super.add(element)
     }
 
     override fun removeAt(index: Int): View {
       val removedView = super.removeAt(index)
-      listeners.forEach { it.onViewAttachStateChanged(removedView, AttachState.DETACHED) }
+      listeners.forEach { it.onViewAttachStateChanged(removedView, false) }
       return removedView
     }
   }
@@ -28,7 +29,7 @@ internal class RootViewsSpy private constructor() {
   companion object {
     fun install(): RootViewsSpy {
       return RootViewsSpy().apply {
-        ViewManagerSpy.swapViewManagerGlobalMViews { mViews ->
+        WindowManagerSpy.swapViewManagerGlobalMViews { mViews ->
           delegatingViewList.apply { addAll(mViews) }
         }
       }

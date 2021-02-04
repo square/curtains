@@ -1,59 +1,91 @@
-public abstract class curtains/AttachState : java/lang/Enum {
-	public static final field ATTACHED Lcurtains/AttachState;
-	public static final field Companion Lcurtains/AttachState$Companion;
-	public static final field DETACHED Lcurtains/AttachState;
-	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun getAttached ()Z
-	public static fun valueOf (Ljava/lang/String;)Lcurtains/AttachState;
-	public static fun values ()[Lcurtains/AttachState;
-}
-
-public final class curtains/AttachState$Companion {
-	public final fun from (Z)Lcurtains/AttachState;
-}
-
 public final class curtains/Curtains {
 	public static final field INSTANCE Lcurtains/Curtains;
 	public final fun getAttachedRootViews ()Ljava/util/List;
 	public final fun getAttachedWindows ()Ljava/util/List;
-	public final fun getRootViewAttachListeners ()Ljava/util/List;
-	public final fun getWindowAttachListeners ()Ljava/util/List;
+	public final fun getRootViewAttachStateListeners ()Ljava/util/List;
+	public final fun getWindowAttachStateListeners ()Ljava/util/List;
 }
 
-public abstract class curtains/DispatchState : java/lang/Enum {
-	public static final field CONSUMED Lcurtains/DispatchState;
+public abstract class curtains/DispatchState {
 	public static final field Companion Lcurtains/DispatchState$Companion;
-	public static final field NOT_CONSUMED Lcurtains/DispatchState;
-	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun getConsumed ()Z
-	public static fun valueOf (Ljava/lang/String;)Lcurtains/DispatchState;
-	public static fun values ()[Lcurtains/DispatchState;
 }
 
 public final class curtains/DispatchState$Companion {
-	public final fun from (Z)Lcurtains/DispatchState;
 }
 
-public abstract class curtains/FocusState : java/lang/Enum {
-	public static final field Companion Lcurtains/FocusState$Companion;
-	public static final field FOCUSED Lcurtains/FocusState;
-	public static final field NOT_FOCUSED Lcurtains/FocusState;
-	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun getFocused ()Z
-	public static fun valueOf (Ljava/lang/String;)Lcurtains/FocusState;
-	public static fun values ()[Lcurtains/FocusState;
+public final class curtains/DispatchState$Consumed : curtains/DispatchState {
+	public static final field INSTANCE Lcurtains/DispatchState$Consumed;
 }
 
-public final class curtains/FocusState$Companion {
-	public final fun from (Z)Lcurtains/FocusState;
+public final class curtains/DispatchState$NotConsumed : curtains/DispatchState {
+}
+
+public abstract interface class curtains/OnContentChangedListener {
+	public abstract fun onContentChanged ()V
+}
+
+public abstract interface class curtains/TouchEventInterceptor {
+	public abstract fun intercept (Landroid/view/MotionEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
+}
+
+public abstract interface class curtains/TouchEventListener : curtains/TouchEventInterceptor {
+	public abstract fun intercept (Landroid/view/MotionEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
+	public abstract fun onTouchEvent (Landroid/view/MotionEvent;)V
+}
+
+public final class curtains/TouchEventListener$DefaultImpls {
+	public static fun intercept (Lcurtains/TouchEventListener;Landroid/view/MotionEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
+}
+
+public abstract interface class curtains/ViewAttachStateListener {
+	public abstract fun onViewAttachStateChanged (Landroid/view/View;Z)V
+}
+
+public abstract interface class curtains/ViewAttachedListener : curtains/ViewAttachStateListener {
+	public abstract fun onViewAttachStateChanged (Landroid/view/View;Z)V
+	public abstract fun onViewAttached (Landroid/view/View;)V
+}
+
+public final class curtains/ViewAttachedListener$DefaultImpls {
+	public static fun onViewAttachStateChanged (Lcurtains/ViewAttachedListener;Landroid/view/View;Z)V
+}
+
+public abstract interface class curtains/ViewDetachedListener : curtains/ViewAttachStateListener {
+	public abstract fun onViewAttachStateChanged (Landroid/view/View;Z)V
+	public abstract fun onViewDetached (Landroid/view/View;)V
+}
+
+public final class curtains/ViewDetachedListener$DefaultImpls {
+	public static fun onViewAttachStateChanged (Lcurtains/ViewDetachedListener;Landroid/view/View;Z)V
+}
+
+public abstract interface class curtains/WindowAttachStateListener {
+	public abstract fun onWindowAttachStateChanged (Landroid/view/Window;Z)V
+}
+
+public abstract interface class curtains/WindowAttachedListener : curtains/WindowAttachStateListener {
+	public abstract fun onWindowAttachStateChanged (Landroid/view/Window;Z)V
+	public abstract fun onWindowAttached (Landroid/view/Window;)V
+}
+
+public final class curtains/WindowAttachedListener$DefaultImpls {
+	public static fun onWindowAttachStateChanged (Lcurtains/WindowAttachedListener;Landroid/view/Window;Z)V
+}
+
+public abstract interface class curtains/WindowDetachedListener : curtains/WindowAttachStateListener {
+	public abstract fun onWindowAttachStateChanged (Landroid/view/Window;Z)V
+	public abstract fun onWindowDetached (Landroid/view/Window;)V
+}
+
+public final class curtains/WindowDetachedListener$DefaultImpls {
+	public static fun onWindowAttachStateChanged (Lcurtains/WindowDetachedListener;Landroid/view/Window;Z)V
 }
 
 public final class curtains/WindowsKt {
-	public static final fun getAfterDispatchTouchEventListeners (Landroid/view/Window;)Ljava/util/List;
-	public static final fun getBeforeDispatchTouchEventListeners (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getOnContentChangedListeners (Landroid/view/Window;)Ljava/util/List;
-	public static final fun getOnWindowFocusChangedListeners (Landroid/view/Window;)Ljava/util/List;
+	public static final fun getTouchEventInterceptors (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getWindow (Landroid/view/View;)Landroid/view/Window;
+	public static final fun getWindowAttachCount (Landroid/view/View;)I
 	public static final fun onDecorViewReady (Landroid/view/Window;Lkotlin/jvm/functions/Function1;)V
 	public static final fun onNextDraw (Landroid/view/Window;Lkotlin/jvm/functions/Function0;)V
 }

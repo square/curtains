@@ -5,6 +5,9 @@ import android.view.View
 import android.view.Window
 import kotlin.LazyThreadSafetyMode.NONE
 
+/**
+ * Utilities to extracts a [Window] out of a [View] if that view is a decor view.
+ */
 @SuppressLint("PrivateApi")
 internal object DecorViewSpy {
 

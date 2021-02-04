@@ -2,7 +2,36 @@
 
 # Curtains
 
-_Was ist das?_ The missing Android Window APIs!
+_Lift the curtain on Android Windows!_
+
+The Android Framework is missing critical Window related APIs. This library fills the gaps.
+
+Developers are not in control of the entirety of their code and therefore need APIs for
+managing components in a centralized way. App developers constantly leverage 3rd party libraries,
+work in codebases which high complexity and a large number of collaborators. Library developers
+write code that gets integrated within code they do not control.
+
+In practice, this manifests as a lack of central API for tracking the lifecycle of Android windows
+(e.g. you can't know if a library shows a dialog), Android manifest components (services, providers,
+ broadcast receiver) or accessing view state without subclassing.
+
+The *Curtains* library provides centralized APIs for managing Window related concerns.
+Its internals are a happy mix of hacks, workarounds for known Android bugs and glue code for
+simplifying APIs.
+
+Here are a few use cases that _Curtains_ enables:
+
+* TODO Add link to touch event bug
+* TODO frozen touch
+* TODO Detecting first draw
+* TODO intercept / cancel touch events / layers
+* [LeakCanary](https://github.com/square/leakcanary) needs to know when root views are detached to
+detect if they might be leaking.
+* The [Espresso](https://developer.android.com/training/testing/espresso) UI test library needs
+access to the list of attached root views to state view expectations, interactions, and assertions.\
+Espresso does not use _Curtains_ but internally relies on the exact same hacks (see [RootsOracle](https://github.com/android/android-test/blob/master/espresso/core/java/androidx/test/espresso/base/RootsOracle.java)).
+
+
 
 ```kotlin
 class ExampleApplication : Application() {

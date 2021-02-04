@@ -5,8 +5,14 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 
-internal object ViewManagerSpy {
+/**
+ * Enables replacing WindowManagerGlobal.mViews with a custom ArrayList implementation.
+ *
+ * Inspired from https://github.com/android/android-test/blob/master/espresso/core/java/androidx/test/espresso/base/RootsOracle.java
+ */
+internal object WindowManagerSpy {
 
+  // You can discourage me all you want I'll still do it.
   @SuppressLint("PrivateApi", "ObsoleteSdkInt", "DiscouragedPrivateApi")
   fun swapViewManagerGlobalMViews(swap: (ArrayList<View>) -> ArrayList<View>) {
     if (Build.VERSION.SDK_INT < 19) {
@@ -25,7 +31,7 @@ internal object ViewManagerSpy {
 
       mViewsField[windowManagerGlobalInstance] = swap(mViews)
     } catch (ignored: Throwable) {
-      Log.w("ViewManagerSpy", ignored)
+      Log.w("WindowManagerSpy", ignored)
     }
   }
 }

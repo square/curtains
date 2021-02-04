@@ -4,6 +4,9 @@ import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.ViewTreeObserver.OnDrawListener
 
+/**
+ * A utility class to listen to the next ondraw call on a view hierarchy, working around AOSP bugs.
+ */
 internal class NextDrawListener(
   private val view: View,
   private val onDrawCallback: () -> Unit
