@@ -22,7 +22,6 @@ class OnNextDrawTest {
    * This enum help express that we expect [onNextDraw] to trigger in between
    * [android.app.Activity.onResume] and a draw listener set from on resume (i.e. later in the list
    * of listeners).
-   *
    */
   enum class CountOrder {
     ON_RESUME,
