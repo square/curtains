@@ -3,28 +3,29 @@ package curtains.test
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.PixelFormat
-import android.os.Build
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
 import androidx.test.core.app.ActivityScenario
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import curtains.Curtains
+import curtains.ViewAttachStateListener
 import curtains.ViewAttachedListener
 import curtains.ViewDetachedListener
 import curtains.WindowAttachedListener
 import curtains.WindowDetachedListener
 import curtains.test.utilities.CountDownLatchSubject.Companion.assertThat
 import curtains.test.utilities.TestActivity
-import org.junit.Assume.assumeTrue
+import curtains.test.utilities.addUntilClosed
+import curtains.test.utilities.assumeSdkBelow
+import curtains.test.utilities.checkAwait
+import curtains.test.utilities.getOnActivity
+import curtains.test.utilities.getOnMain
 import org.junit.Test
-import java.io.Closeable
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.atomic.AtomicReference
 
-class CurtainsUiTest {
+class CurtainsTest {
 
   @Test fun no_root_views_when_no_activity() {
     assertThat(getOnMain { Curtains.attachedWindows }).isEmpty()
@@ -92,27 +93,40 @@ class CurtainsUiTest {
       listeners.addUntilClosed(ViewAttachedListener {
         viewAttachedLatch.countDown()
       }).use {
-        scenario.onActivity { activity ->
-          val toast = Toast.makeText(activity, "Toast!", Toast.LENGTH_SHORT)
-          toast.show()
-          toast.cancel()
+        val toast = scenario.getOnActivity { activity ->
+          Toast.makeText(activity, "Toast!", Toast.LENGTH_SHORT).apply {
+            show()
+          }
         }
         assertThat(viewAttachedLatch).countsToZero()
+        scenario.onActivity {
+          toast.cancel()
+        }
       }
     }
   }
 
   @Test fun cancel_toast_detaches_root_view() {
     assumeSdkBelow(29, "in Q, text toasts are rendered by SystemUI instead of in-app")
+
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
+      val viewAttachedLatch = CountDownLatch(1)
       val viewDetachedLatch = CountDownLatch(1)
       val listeners = getOnMain { Curtains.rootViewAttachStateListeners }
-      listeners.addUntilClosed(ViewDetachedListener {
-        viewDetachedLatch.countDown()
+      listeners.addUntilClosed(ViewAttachStateListener { _, attached ->
+        if (attached) {
+          viewAttachedLatch.countDown()
+        } else {
+          viewDetachedLatch.countDown()
+        }
       }).use {
-        scenario.onActivity { activity ->
-          val toast = Toast.makeText(activity, "Toast!", Toast.LENGTH_SHORT)
-          toast.show()
+        val toast = scenario.getOnActivity { activity ->
+          Toast.makeText(activity, "Toast!", Toast.LENGTH_SHORT).apply {
+            show()
+          }
+        }
+        viewAttachedLatch.checkAwait()
+        scenario.onActivity {
           toast.cancel()
         }
         assertThat(viewDetachedLatch).countsToZero()
@@ -128,7 +142,7 @@ class CurtainsUiTest {
         viewAttachedLatch.countDown()
       }).use {
         scenario.onActivity { activity ->
-         val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+          val windowManager = activity.getSystemService(Context.WINDOW_SERVICE) as WindowManager
           val params = LayoutParams(
             LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT,
@@ -168,35 +182,5 @@ class CurtainsUiTest {
         assertThat(viewDetachedLatch).countsToZero()
       }
     }
-  }
-
-  private fun <T> getOnMain(runOnMainSync: () -> T): T {
-    val result = AtomicReference<T>()
-    InstrumentationRegistry.getInstrumentation().runOnMainSync {
-      result.set(runOnMainSync())
-    }
-    return result.get()
-  }
-
-  private fun <T> MutableList<T>.addUntilClosed(element: T): Closeable {
-    this += element
-    return Closeable {
-      this -= element
-    }
-  }
-
-  private fun assumeSdkBelow(
-    sdkInt: Int,
-    reason: String
-  ) {
-    val targetSdkVersion =
-      InstrumentationRegistry.getInstrumentation().context.applicationInfo.targetSdkVersion
-    val currentVersion = Build.VERSION.SDK_INT
-    assumeTrue(
-      "Can only run below API level $sdkInt because $reason. " +
-        "currentVersion: $currentVersion, " +
-        "targetSdkVersion: $targetSdkVersion.",
-      currentVersion < sdkInt || targetSdkVersion < sdkInt
-    )
   }
 }

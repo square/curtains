@@ -17,7 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 
-class DispatchTouchEventTest : HasActivityScenarioRule<TestActivity> {
+class TouchEventInterceptorsTest : HasActivityScenarioRule<TestActivity> {
 
   @get:Rule
   override val rule = ActivityScenarioRule(TestActivity::class.java)
