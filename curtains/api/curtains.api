@@ -1,3 +1,23 @@
+public abstract interface class curtains/ActivityLifecycleCallbacksAdapter : android/app/Application$ActivityLifecycleCallbacks {
+	public abstract fun onActivityCreated (Landroid/app/Activity;Landroid/os/Bundle;)V
+	public abstract fun onActivityDestroyed (Landroid/app/Activity;)V
+	public abstract fun onActivityPaused (Landroid/app/Activity;)V
+	public abstract fun onActivityResumed (Landroid/app/Activity;)V
+	public abstract fun onActivitySaveInstanceState (Landroid/app/Activity;Landroid/os/Bundle;)V
+	public abstract fun onActivityStarted (Landroid/app/Activity;)V
+	public abstract fun onActivityStopped (Landroid/app/Activity;)V
+}
+
+public final class curtains/ActivityLifecycleCallbacksAdapter$DefaultImpls {
+	public static fun onActivityCreated (Lcurtains/ActivityLifecycleCallbacksAdapter;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityDestroyed (Lcurtains/ActivityLifecycleCallbacksAdapter;Landroid/app/Activity;)V
+	public static fun onActivityPaused (Lcurtains/ActivityLifecycleCallbacksAdapter;Landroid/app/Activity;)V
+	public static fun onActivityResumed (Lcurtains/ActivityLifecycleCallbacksAdapter;Landroid/app/Activity;)V
+	public static fun onActivitySaveInstanceState (Lcurtains/ActivityLifecycleCallbacksAdapter;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityStarted (Lcurtains/ActivityLifecycleCallbacksAdapter;Landroid/app/Activity;)V
+	public static fun onActivityStopped (Lcurtains/ActivityLifecycleCallbacksAdapter;Landroid/app/Activity;)V
+}
+
 public final class curtains/Curtains {
 	public static final field INSTANCE Lcurtains/Curtains;
 	public final fun getAttachedRootViews ()Ljava/util/List;
@@ -18,6 +38,111 @@ public final class curtains/DispatchState$Consumed : curtains/DispatchState {
 }
 
 public final class curtains/DispatchState$NotConsumed : curtains/DispatchState {
+}
+
+public abstract interface class curtains/OnActivityCreated : curtains/ActivityLifecycleCallbacksAdapter {
+	public abstract fun activityCreated (Landroid/app/Activity;Landroid/os/Bundle;)V
+	public abstract fun onActivityCreated (Landroid/app/Activity;Landroid/os/Bundle;)V
+}
+
+public final class curtains/OnActivityCreated$DefaultImpls {
+	public static fun onActivityCreated (Lcurtains/OnActivityCreated;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityDestroyed (Lcurtains/OnActivityCreated;Landroid/app/Activity;)V
+	public static fun onActivityPaused (Lcurtains/OnActivityCreated;Landroid/app/Activity;)V
+	public static fun onActivityResumed (Lcurtains/OnActivityCreated;Landroid/app/Activity;)V
+	public static fun onActivitySaveInstanceState (Lcurtains/OnActivityCreated;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityStarted (Lcurtains/OnActivityCreated;Landroid/app/Activity;)V
+	public static fun onActivityStopped (Lcurtains/OnActivityCreated;Landroid/app/Activity;)V
+}
+
+public abstract interface class curtains/OnActivityDestroyed : curtains/ActivityLifecycleCallbacksAdapter {
+	public abstract fun activityDestroyed (Landroid/app/Activity;)V
+	public abstract fun onActivityDestroyed (Landroid/app/Activity;)V
+}
+
+public final class curtains/OnActivityDestroyed$DefaultImpls {
+	public static fun onActivityCreated (Lcurtains/OnActivityDestroyed;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityDestroyed (Lcurtains/OnActivityDestroyed;Landroid/app/Activity;)V
+	public static fun onActivityPaused (Lcurtains/OnActivityDestroyed;Landroid/app/Activity;)V
+	public static fun onActivityResumed (Lcurtains/OnActivityDestroyed;Landroid/app/Activity;)V
+	public static fun onActivitySaveInstanceState (Lcurtains/OnActivityDestroyed;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityStarted (Lcurtains/OnActivityDestroyed;Landroid/app/Activity;)V
+	public static fun onActivityStopped (Lcurtains/OnActivityDestroyed;Landroid/app/Activity;)V
+}
+
+public abstract interface class curtains/OnActivityPaused : curtains/ActivityLifecycleCallbacksAdapter {
+	public abstract fun activityPaused (Landroid/app/Activity;)V
+	public abstract fun onActivityPaused (Landroid/app/Activity;)V
+}
+
+public final class curtains/OnActivityPaused$DefaultImpls {
+	public static fun onActivityCreated (Lcurtains/OnActivityPaused;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityDestroyed (Lcurtains/OnActivityPaused;Landroid/app/Activity;)V
+	public static fun onActivityPaused (Lcurtains/OnActivityPaused;Landroid/app/Activity;)V
+	public static fun onActivityResumed (Lcurtains/OnActivityPaused;Landroid/app/Activity;)V
+	public static fun onActivitySaveInstanceState (Lcurtains/OnActivityPaused;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityStarted (Lcurtains/OnActivityPaused;Landroid/app/Activity;)V
+	public static fun onActivityStopped (Lcurtains/OnActivityPaused;Landroid/app/Activity;)V
+}
+
+public abstract interface class curtains/OnActivityResumed : curtains/ActivityLifecycleCallbacksAdapter {
+	public abstract fun activityResumed (Landroid/app/Activity;)V
+	public abstract fun onActivityResumed (Landroid/app/Activity;)V
+}
+
+public final class curtains/OnActivityResumed$DefaultImpls {
+	public static fun onActivityCreated (Lcurtains/OnActivityResumed;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityDestroyed (Lcurtains/OnActivityResumed;Landroid/app/Activity;)V
+	public static fun onActivityPaused (Lcurtains/OnActivityResumed;Landroid/app/Activity;)V
+	public static fun onActivityResumed (Lcurtains/OnActivityResumed;Landroid/app/Activity;)V
+	public static fun onActivitySaveInstanceState (Lcurtains/OnActivityResumed;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityStarted (Lcurtains/OnActivityResumed;Landroid/app/Activity;)V
+	public static fun onActivityStopped (Lcurtains/OnActivityResumed;Landroid/app/Activity;)V
+}
+
+public abstract interface class curtains/OnActivitySaveInstanceState : curtains/ActivityLifecycleCallbacksAdapter {
+	public abstract fun activitySaveInstanceState (Landroid/app/Activity;Landroid/os/Bundle;)V
+	public abstract fun onActivitySaveInstanceState (Landroid/app/Activity;Landroid/os/Bundle;)V
+}
+
+public final class curtains/OnActivitySaveInstanceState$DefaultImpls {
+	public static fun onActivityCreated (Lcurtains/OnActivitySaveInstanceState;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityDestroyed (Lcurtains/OnActivitySaveInstanceState;Landroid/app/Activity;)V
+	public static fun onActivityPaused (Lcurtains/OnActivitySaveInstanceState;Landroid/app/Activity;)V
+	public static fun onActivityResumed (Lcurtains/OnActivitySaveInstanceState;Landroid/app/Activity;)V
+	public static fun onActivitySaveInstanceState (Lcurtains/OnActivitySaveInstanceState;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityStarted (Lcurtains/OnActivitySaveInstanceState;Landroid/app/Activity;)V
+	public static fun onActivityStopped (Lcurtains/OnActivitySaveInstanceState;Landroid/app/Activity;)V
+}
+
+public abstract interface class curtains/OnActivityStarted : curtains/ActivityLifecycleCallbacksAdapter {
+	public abstract fun activityStarted (Landroid/app/Activity;)V
+	public abstract fun onActivityStarted (Landroid/app/Activity;)V
+}
+
+public final class curtains/OnActivityStarted$DefaultImpls {
+	public static fun onActivityCreated (Lcurtains/OnActivityStarted;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityDestroyed (Lcurtains/OnActivityStarted;Landroid/app/Activity;)V
+	public static fun onActivityPaused (Lcurtains/OnActivityStarted;Landroid/app/Activity;)V
+	public static fun onActivityResumed (Lcurtains/OnActivityStarted;Landroid/app/Activity;)V
+	public static fun onActivitySaveInstanceState (Lcurtains/OnActivityStarted;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityStarted (Lcurtains/OnActivityStarted;Landroid/app/Activity;)V
+	public static fun onActivityStopped (Lcurtains/OnActivityStarted;Landroid/app/Activity;)V
+}
+
+public abstract interface class curtains/OnActivityStopped : curtains/ActivityLifecycleCallbacksAdapter {
+	public abstract fun activityStopped (Landroid/app/Activity;)V
+	public abstract fun onActivityStopped (Landroid/app/Activity;)V
+}
+
+public final class curtains/OnActivityStopped$DefaultImpls {
+	public static fun onActivityCreated (Lcurtains/OnActivityStopped;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityDestroyed (Lcurtains/OnActivityStopped;Landroid/app/Activity;)V
+	public static fun onActivityPaused (Lcurtains/OnActivityStopped;Landroid/app/Activity;)V
+	public static fun onActivityResumed (Lcurtains/OnActivityStopped;Landroid/app/Activity;)V
+	public static fun onActivitySaveInstanceState (Lcurtains/OnActivityStopped;Landroid/app/Activity;Landroid/os/Bundle;)V
+	public static fun onActivityStarted (Lcurtains/OnActivityStopped;Landroid/app/Activity;)V
+	public static fun onActivityStopped (Lcurtains/OnActivityStopped;Landroid/app/Activity;)V
 }
 
 public abstract interface class curtains/OnContentChangedListener {
@@ -84,6 +209,7 @@ public final class curtains/WindowDetachedListener$DefaultImpls {
 public final class curtains/WindowsKt {
 	public static final fun getOnContentChangedListeners (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getTouchEventInterceptors (Landroid/view/Window;)Ljava/util/List;
+	public static final fun getUnwrappedCallback (Landroid/view/Window;)Landroid/view/Window$Callback;
 	public static final fun getWindow (Landroid/view/View;)Landroid/view/Window;
 	public static final fun getWindowAttachCount (Landroid/view/View;)I
 	public static final fun onDecorViewReady (Landroid/view/Window;Lkotlin/jvm/functions/Function1;)V

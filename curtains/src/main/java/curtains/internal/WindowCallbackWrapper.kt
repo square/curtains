@@ -60,5 +60,16 @@ internal class WindowDelegateCallback constructor(
           }
         }
       }
+
+    val Window.unwrappedCallback: Window.Callback?
+      get() {
+        return when (val currentCallback = callback) {
+          // We expect a window to always have a default callback
+          // that we can delegate to, but who knows what apps can be up to.
+          null -> null
+          is WindowDelegateCallback -> currentCallback.delegate
+          else -> currentCallback
+        }
+      }
   }
 }

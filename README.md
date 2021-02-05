@@ -4,18 +4,16 @@
 
 _Lift the curtain on Android Windows!_
 
-The Android Framework is missing critical Window related APIs. This library fills the gaps.
-
-Developers are not in control of the entirety of their code and therefore need APIs for
+Android developers are not in control of the entirety of their code and therefore need APIs for
 managing components in a centralized way. App developers constantly leverage 3rd party libraries,
-work in codebases which high complexity and a large number of collaborators. Library developers
-write code that gets integrated within code they do not control.
+work in code bases which high complexity and many collaborators. Library developers
+write code that gets integrated within app code they do not control.
 
-In practice, this manifests as a lack of central API for tracking the lifecycle of Android windows
+Unfortunately, the Android Framework lacks API for tracking the lifecycle of Android windows
 (e.g. you can't know if a library shows a dialog), Android manifest components (services, providers,
  broadcast receiver) or accessing view state without subclassing.
 
-The *Curtains* library provides centralized APIs for managing Window related concerns.
+_Curtains_ provides centralized APIs for managing Window related concerns.
 Its internals are a happy mix of hacks, workarounds for known Android bugs and glue code for
 simplifying APIs.
 
@@ -31,7 +29,19 @@ detect if they might be leaking.
 access to the list of attached root views to state view expectations, interactions, and assertions.\
 Espresso does not use _Curtains_ but internally relies on the exact same hacks (see [RootsOracle](https://github.com/android/android-test/blob/master/espresso/core/java/androidx/test/espresso/base/RootsOracle.java)).
 
+* [Usage](#usage)
+* [FAQ](#faq)
+* [License](#license)
 
+## Usage
+
+Add the `curtains` dependency to your app's `build.gradle` file:
+
+```gradle
+dependencies {
+  implementation 'com.squareup.curtains:curtains:1.0'
+}
+```
 
 ```kotlin
 class ExampleApplication : Application() {
@@ -91,26 +101,15 @@ class ExampleApplication : Application() {
 }
 ```
 
-
-* [Usage](#usage)
-* [FAQ](#faq)
-* [License](#license)
-
-## Usage
-
-Add the `curtains` dependency to your app's `build.gradle` file:
-
-```gradle
-dependencies {
-  implementation 'com.squareup.curtains:curtains:1.0'
-}
-```
-
-TODO
-
 ## FAQ
 
-TODO
+### Does this library introduce risks
+
+### When should I use this?
+
+Not for everyday dev.
+
+### Whoi
 
 ## License
 
