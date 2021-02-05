@@ -11,7 +11,7 @@ write code that gets integrated within app code they do not control.
 
 Unfortunately, the Android Framework lacks API for tracking the lifecycle of Android windows
 (e.g. you can't know if a library shows a dialog), Android manifest components (services, providers,
- broadcast receiver) or accessing view state without subclassing.
+broadcast receiver) or accessing view state without subclassing.
 
 _Curtains_ provides centralized APIs for managing Window related concerns.
 Its internals are a happy mix of hacks, workarounds for known Android bugs and glue code for
@@ -19,15 +19,18 @@ simplifying APIs.
 
 Here are a few use cases that _Curtains_ enables:
 
-* TODO Add link to touch event bug
+* Intercept broken touch events for all windows (e.g. [156666934](https://issuetracker.google.com/issues/156666934))
+* block touch events when windows start showing.
 * TODO frozen touch
 * TODO Detecting first draw
 * TODO intercept / cancel touch events / layers
 * [LeakCanary](https://github.com/square/leakcanary) needs to know when root views are detached to
 detect if they might be leaking.
 * The [Espresso](https://developer.android.com/training/testing/espresso) UI test library needs
-access to the list of attached root views to state view expectations, interactions, and assertions.\
+access to the list of attached root views to state view expectations, interactions, and assertions.
 Espresso does not use _Curtains_ but internally relies on the exact same hacks (see [RootsOracle](https://github.com/android/android-test/blob/master/espresso/core/java/androidx/test/espresso/base/RootsOracle.java)).
+
+TODO maybe mention the difference between system window and android.view.Window
 
 * [Usage](#usage)
 * [FAQ](#faq)
@@ -109,7 +112,12 @@ class ExampleApplication : Application() {
 
 Not for everyday dev.
 
-### Whoi
+### Who named this library?
+
+I ([@pyricau](http://github.com/pyricau)) initially named it
+[vasistas](https://www.grammarphobia.com/blog/2013/11/vasistas.html) but that was too hard to
+pronounce for English speakers. [Christina Lee](https://github.com/christinalee) suggested that
+curtains are useful add-ons to windows in the real world and hence this library is now _Curtains_.
 
 ## License
 
