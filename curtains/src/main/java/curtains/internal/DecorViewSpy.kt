@@ -60,7 +60,7 @@ internal object DecorViewSpy {
       val sdkInt = Build.VERSION.SDK_INT
       val fieldName = if (sdkInt >= 24) "mWindow" else "this$0"
       try {
-        decorViewClass.getDeclaredField("fieldName").apply { isAccessible = true }
+        decorViewClass.getDeclaredField(fieldName).apply { isAccessible = true }
       } catch (ignored: NoSuchFieldException) {
         Log.d(
           "DecorViewSpy",
