@@ -35,7 +35,7 @@ internal object DecorViewSpy {
     }
     try {
       Class.forName(decorViewClassName)
-    } catch (ignored: Throwable)  {
+    } catch (ignored: Throwable) {
       Log.d(
         "DecorViewSpy", "Unexpected exception loading $decorViewClassName on API $sdkInt", ignored
       )
@@ -64,7 +64,7 @@ internal object DecorViewSpy {
       } catch (ignored: NoSuchFieldException) {
         Log.d(
           "DecorViewSpy",
-          "Unexpected exception retrieving ${decorViewClass}.$fieldName on API $sdkInt", ignored
+          "Unexpected exception retrieving $decorViewClass#$fieldName on API $sdkInt", ignored
         )
         null
       }
