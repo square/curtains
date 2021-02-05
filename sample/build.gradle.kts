@@ -15,19 +15,10 @@ android {
     minSdkVersion(21)
     targetSdkVersion(30)
     applicationId = "com.squareup.curtains.sample"
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 }
 
 dependencies {
   implementation(project(":curtains"))
   implementation(Dependencies.AppCompat)
-  implementation(Dependencies.ConstraintLayout)
-
-  androidTestImplementation(Dependencies.InstrumentationTests.Core)
-  androidTestImplementation(Dependencies.InstrumentationTests.Espresso)
-  androidTestImplementation(Dependencies.InstrumentationTests.Rules)
-  androidTestImplementation(Dependencies.InstrumentationTests.JUnit)
-  androidTestImplementation(Dependencies.InstrumentationTests.Runner)
-  androidTestImplementation(Dependencies.Truth)
 }
