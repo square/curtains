@@ -1,5 +1,6 @@
 package curtains.internal
 
+import android.os.Build
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import android.view.ViewTreeObserver.OnDrawListener
@@ -32,7 +33,7 @@ internal class NextDrawListener(
     // Prior to API 26, OnDrawListener wasn't merged back from the floating ViewTreeObserver into
     // the real ViewTreeObserver.
     // https://android.googlesource.com/platform/frameworks/base/+/9f8ec54244a5e0343b9748db3329733f259604f3
-    if (view.viewTreeObserver.isAlive && view.isAttachedToWindow) {
+    if (Build.VERSION.SDK_INT >= 26 || (view.viewTreeObserver.isAlive && view.isAttachedToWindow)) {
       view.viewTreeObserver.addOnDrawListener(this)
     } else {
       view.addOnAttachStateChangeListener(this)

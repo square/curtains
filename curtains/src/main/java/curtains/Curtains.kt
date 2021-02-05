@@ -74,6 +74,11 @@ object Curtains {
    * If you only care about the detached state, you can implement the SAM interface
    * [ViewDetachedListener] which extends [ViewAttachStateListener].
    *
+   * Note: The listeners are invoked immediately when [android.view.WindowManager.addView] and
+   * [android.view.WindowManager.removeView] are called. [android.view.WindowManager.addView]
+   * happens BEFORE [View.onAttachedToWindow] is invoked, as a view only becomes attached on the
+   * next view traversal.
+   *
    * @throws IllegalStateException if not called from the main thread.
    */
   val rootViewAttachStateListeners: MutableList<ViewAttachStateListener>
@@ -91,6 +96,11 @@ object Curtains {
    *
    * If you only care about the detached state, you can implement the SAM interface
    * [WindowDetachedListener] which extends [WindowAttachStateListener].
+   *
+   * Note: The listeners are invoked immediately when [android.view.WindowManager.addView] and
+   * [android.view.WindowManager.removeView] are called. [android.view.WindowManager.addView]
+   * happens BEFORE [View.onAttachedToWindow] is invoked, as a view only becomes attached on the
+   * next view traversal.
    *
    * @throws IllegalStateException if not called from the main thread.
    */

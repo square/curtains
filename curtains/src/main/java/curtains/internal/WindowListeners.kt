@@ -5,7 +5,7 @@ import curtains.TouchEventInterceptor
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * Listeners held by [WindowDelegateCallback].
+ * Listeners held by [WindowCallbackWrapper].
  */
 internal class WindowListeners {
   val touchEventInterceptors = CopyOnWriteArrayList<TouchEventInterceptor>()

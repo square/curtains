@@ -9,7 +9,7 @@ import curtains.DispatchState.Consumed
  * Replaces the default Window callback to allows adding listeners / interceptors
  * for interesting events.
  */
-internal class WindowDelegateCallback constructor(
+internal class WindowCallbackWrapper constructor(
   private val delegate: Window.Callback,
   private val listeners: WindowListeners
 ) : Window.Callback by delegate {
@@ -52,22 +52,22 @@ internal class WindowDelegateCallback constructor(
           // We expect a window to always have a default callback
           // that we can delegate to, but who knows what apps can be up to.
           null -> WindowListeners()
-          is WindowDelegateCallback -> currentCallback.listeners
+          is WindowCallbackWrapper -> currentCallback.listeners
           else -> {
             WindowListeners().apply {
-              callback = WindowDelegateCallback(currentCallback, this)
+              callback = WindowCallbackWrapper(currentCallback, this)
             }
           }
         }
       }
 
-    val Window.unwrappedCallback: Window.Callback?
+    val Window.wrappedCallback: Window.Callback?
       get() {
         return when (val currentCallback = callback) {
           // We expect a window to always have a default callback
           // that we can delegate to, but who knows what apps can be up to.
           null -> null
-          is WindowDelegateCallback -> currentCallback.delegate
+          is WindowCallbackWrapper -> currentCallback.delegate
           else -> currentCallback
         }
       }

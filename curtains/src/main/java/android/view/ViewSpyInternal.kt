@@ -5,4 +5,4 @@ package android.view
  * making that class public.
  */
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun windowAttachCount(view: View) = JavaViewSpy.windowAttachCount(view)
+internal fun windowAttachCount(view: View) = JavaViewSpy.windowAttachCount(view)
