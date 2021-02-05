@@ -19,7 +19,7 @@ class CountDownLatchSubject private constructor(
         simpleFact(
           "Expected latch to count to zero within 30 seconds, count is still at ${actual.count}"
         )
-      );
+      )
     }
   }
 

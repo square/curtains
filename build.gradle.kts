@@ -35,7 +35,7 @@ extensions.configure<ApiValidationExtension> {
   // Only leaf project name is valid configuration, and every project must be individually ignored.
   // See https://github.com/Kotlin/binary-compatibility-validator/issues/3
   ignoredProjects = mutableSetOf(
-      "sample"
+    "sample"
   )
 }
 
@@ -75,14 +75,14 @@ subprojects {
     }
 
     disabledRules.set(
-        setOf(
-            // IntelliJ refuses to sort imports correctly.
-            // This is a known issue: https://github.com/pinterest/ktlint/issues/527
-            "import-ordering",
-            "indent",
-            "parameter-list-wrapping",
-            "final-newline"
-        )
+      setOf(
+        // IntelliJ refuses to sort imports correctly.
+        // This is a known issue: https://github.com/pinterest/ktlint/issues/527
+        "import-ordering",
+        "indent",
+        "parameter-list-wrapping",
+        "final-newline"
+      )
     )
   }
 }

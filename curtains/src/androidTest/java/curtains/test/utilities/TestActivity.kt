@@ -10,5 +10,4 @@ class TestActivity : Activity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.test)
   }
-
 }

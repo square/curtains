@@ -3,14 +3,11 @@ package curtains.test
 import android.app.AlertDialog
 import android.view.View
 import androidx.test.core.app.ActivityScenario
-import curtains.Curtains
 import curtains.OnActivityCreated
 import curtains.OnContentChangedListener
-import curtains.WindowAttachedListener
 import curtains.onContentChangedListeners
 import curtains.test.utilities.CountDownLatchSubject.Companion.assertThat
 import curtains.test.utilities.TestActivity
-import curtains.test.utilities.addUntilClosed
 import curtains.test.utilities.application
 import curtains.test.utilities.registerUntilClosed
 import org.junit.Test
@@ -44,7 +41,6 @@ class OnContentChangedListenersTest {
           contentChanged.countDown()
         }
         activity.setContentView(View(activity))
-
       }
     }
 
