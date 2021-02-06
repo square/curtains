@@ -50,6 +50,7 @@ jobs:
           script: ./gradlew connectedCheck --no-build-cache --no-daemon --stacktrace
 
       - name: Upload results
+        if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
           name: instrumentation-test-results ${{ matrix.api-level }}
