@@ -9,6 +9,7 @@ import com.google.common.truth.Truth.assertThat
 import curtains.test.utilities.HasActivityScenarioRule
 import curtains.test.utilities.TestActivity
 import curtains.test.utilities.checkAwait
+import curtains.test.utilities.onAttachedToWindow
 import curtains.windowAttachCount
 import org.junit.Rule
 import org.junit.Test
@@ -73,12 +74,4 @@ class WindowAttachCountTest : HasActivityScenarioRule<TestActivity> {
       }
     })
   }
-}
-
-private fun View.onAttachedToWindow(onAttachedToWindow: () -> Unit) {
-  addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
-    override fun onViewAttachedToWindow(v: View) = onAttachedToWindow()
-
-    override fun onViewDetachedFromWindow(v: View) = Unit
-  })
 }
