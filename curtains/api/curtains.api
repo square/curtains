@@ -209,9 +209,9 @@ public final class curtains/WindowDetachedListener$DefaultImpls {
 public final class curtains/WindowsKt {
 	public static final fun getOnContentChangedListeners (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getTouchEventInterceptors (Landroid/view/Window;)Ljava/util/List;
-	public static final fun getUnwrappedCallback (Landroid/view/Window;)Landroid/view/Window$Callback;
 	public static final fun getWindow (Landroid/view/View;)Landroid/view/Window;
 	public static final fun getWindowAttachCount (Landroid/view/View;)I
+	public static final fun getWrappedCallback (Landroid/view/Window;)Landroid/view/Window$Callback;
 	public static final fun onDecorViewReady (Landroid/view/Window;Lkotlin/jvm/functions/Function1;)V
 	public static final fun onNextDraw (Landroid/view/Window;Lkotlin/jvm/functions/Function0;)V
 }

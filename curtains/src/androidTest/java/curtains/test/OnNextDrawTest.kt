@@ -11,6 +11,7 @@ import curtains.test.OnNextDrawTest.CountOrder.ON_RESUME
 import curtains.test.utilities.CountDownLatchSubject.Companion.assertThat
 import curtains.test.utilities.TestActivity
 import curtains.test.utilities.application
+import curtains.test.utilities.onAttachedToWindow
 import curtains.test.utilities.registerUntilClosed
 import curtains.test.utilities.useWith
 import org.junit.Test
@@ -47,13 +48,15 @@ class OnNextDrawTest {
         if (activity !is TestActivity) {
           return@OnActivityResumed
         }
-
         var firstOnDrawn = true
-        activity.window.peekDecorView()!!.viewTreeObserver.addOnDrawListener {
-          if (firstOnDrawn) {
-            firstOnDrawn = false
-            assertThat(activityDrawn.count).isEqualTo(ON_DRAW_LISTENER.expectedCount)
-            activityDrawn.countDown()
+        val decorView = activity.window.peekDecorView()!!
+        decorView.onAttachedToWindow {
+          decorView.viewTreeObserver.addOnDrawListener {
+            if (firstOnDrawn) {
+              firstOnDrawn = false
+              assertThat(activityDrawn.count).isEqualTo(ON_DRAW_LISTENER.expectedCount)
+              activityDrawn.countDown()
+            }
           }
         }
         assertThat(activityDrawn.count).isEqualTo(ON_RESUME.expectedCount)

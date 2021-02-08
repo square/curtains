@@ -61,7 +61,7 @@ internal class WindowCallbackWrapper constructor(
         }
       }
 
-    val Window.wrappedCallback: Window.Callback?
+    val Window.wrappedCallbackOrNull: Window.Callback?
       get() {
         return when (val currentCallback = callback) {
           // We expect a window to always have a default callback

@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Build
+import android.view.View
+import android.view.View.OnAttachStateChangeListener
 import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assume
@@ -70,4 +72,12 @@ fun Closeable.useWith(other: Closeable): Closeable {
     close()
     other.close()
   }
+}
+
+fun View.onAttachedToWindow(onAttachedToWindow: () -> Unit) {
+  addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+    override fun onViewAttachedToWindow(v: View) = onAttachedToWindow()
+
+    override fun onViewDetachedFromWindow(v: View) = Unit
+  })
 }
