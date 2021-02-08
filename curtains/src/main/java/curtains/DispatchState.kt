@@ -23,7 +23,7 @@ sealed class DispatchState {
    */
   class NotConsumed internal constructor() : DispatchState()
 
-  companion object {
+  internal companion object {
     private val NotConsumedInternalOnly = NotConsumed()
     internal fun from(consumed: Boolean) = if (consumed) Consumed else NotConsumedInternalOnly
   }

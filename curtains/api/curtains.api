@@ -20,17 +20,14 @@ public final class curtains/ActivityLifecycleCallbacksAdapter$DefaultImpls {
 
 public final class curtains/Curtains {
 	public static final field INSTANCE Lcurtains/Curtains;
-	public final fun getAttachedRootViews ()Ljava/util/List;
-	public final fun getAttachedWindows ()Ljava/util/List;
-	public final fun getRootViewAttachStateListeners ()Ljava/util/List;
-	public final fun getWindowAttachStateListeners ()Ljava/util/List;
+	public static final fun getAttachedRootViews ()Ljava/util/List;
+	public static final fun getAttachedWindows ()Ljava/util/List;
+	public static final fun getRootViewAttachStateListeners ()Ljava/util/List;
+	public static final fun getWindowAttachStateListeners ()Ljava/util/List;
 }
 
 public abstract class curtains/DispatchState {
 	public static final field Companion Lcurtains/DispatchState$Companion;
-}
-
-public final class curtains/DispatchState$Companion {
 }
 
 public final class curtains/DispatchState$Consumed : curtains/DispatchState {

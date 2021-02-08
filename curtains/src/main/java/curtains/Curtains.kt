@@ -46,6 +46,7 @@ object Curtains {
    * @returns a copy of the list of root views held by [android.view.WindowManagerGlobal].
    * @throws IllegalStateException if not called from the main thread.
    */
+  @JvmStatic
   val attachedRootViews: List<View>
     get() {
       checkMainThread()
@@ -58,6 +59,7 @@ object Curtains {
    * are instances of DecorView.
    * @throws IllegalStateException if not called from the main thread.
    */
+  @JvmStatic
   val attachedWindows: List<Window>
     get() {
       checkMainThread()
@@ -81,6 +83,7 @@ object Curtains {
    *
    * @throws IllegalStateException if not called from the main thread.
    */
+  @JvmStatic
   val rootViewAttachStateListeners: MutableList<ViewAttachStateListener>
     get() {
       checkMainThread()
@@ -104,6 +107,7 @@ object Curtains {
    *
    * @throws IllegalStateException if not called from the main thread.
    */
+  @JvmStatic
   val windowAttachStateListeners: MutableList<WindowAttachStateListener>
     get() {
       checkMainThread()
