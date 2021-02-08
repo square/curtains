@@ -21,7 +21,7 @@ import curtains.test.utilities.TestActivity
 import curtains.test.utilities.addUntilClosed
 import curtains.test.utilities.checkAwait
 import curtains.test.utilities.getOnMain
-import curtains.unwrappedCallback
+import curtains.wrappedCallback
 import curtains.window
 import org.junit.Rule
 import org.junit.Test
@@ -46,7 +46,7 @@ class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
         .setView(dialogView)
         .show()
       assertThat(dialogView.window).isSameInstanceAs(dialog.window)
-      assertThat(dialogView.window!!.unwrappedCallback).isInstanceOf(AlertDialog::class.java)
+      assertThat(dialogView.window!!.wrappedCallback).isInstanceOf(AlertDialog::class.java)
       dialog.dismiss()
     }
   }
@@ -123,7 +123,7 @@ class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
       windowAttachedLatch.checkAwait()
 
       onActivity {
-        assertThat(spinnerItemView.window!!.unwrappedCallback).isInstanceOf(AlertDialog::class.java)
+        assertThat(spinnerItemView.window!!.wrappedCallback).isInstanceOf(AlertDialog::class.java)
       }
     }
   }

@@ -6,7 +6,7 @@ import curtains.TouchEventListener
 import curtains.test.utilities.HasActivityScenarioRule
 import curtains.test.utilities.TestActivity
 import curtains.touchEventInterceptors
-import curtains.unwrappedCallback
+import curtains.wrappedCallback
 import org.junit.Rule
 import org.junit.Test
 
@@ -17,7 +17,7 @@ class UnwrappedCallbackTest : HasActivityScenarioRule<TestActivity> {
 
   @Test fun window_callback_not_wrapped_on_new_activity() {
     onActivity { activity ->
-      assertThat(activity.window.unwrappedCallback).isSameInstanceAs(activity.window.callback)
+      assertThat(activity.window.wrappedCallback).isSameInstanceAs(activity.window.callback)
     }
   }
 
@@ -37,7 +37,7 @@ class UnwrappedCallbackTest : HasActivityScenarioRule<TestActivity> {
 
       activity.window.touchEventInterceptors += TouchEventListener {}
 
-      assertThat(activity.window.unwrappedCallback).isSameInstanceAs(initialCallback)
+      assertThat(activity.window.wrappedCallback).isSameInstanceAs(initialCallback)
     }
   }
 }

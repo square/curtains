@@ -6,7 +6,7 @@ import android.view.windowAttachCount
 import curtains.internal.DecorViewSpy
 import curtains.internal.NextDrawListener.Companion.onNextDraw
 import curtains.internal.WindowCallbackWrapper.Companion.listeners
-import curtains.internal.WindowCallbackWrapper.Companion.wrappedCallback
+import curtains.internal.WindowCallbackWrapper.Companion.wrappedCallbackOrNull
 import curtains.internal.checkMainThread
 
 /**
@@ -138,8 +138,8 @@ val View.windowAttachCount: Int
  * Note that this may be null if the Window didn't have a callback set, which normally doesn't
  * happen.
  */
-val Window.unwrappedCallback: Window.Callback?
+val Window.wrappedCallback: Window.Callback?
   get() {
     checkMainThread()
-    return wrappedCallback
+    return wrappedCallbackOrNull
   }
