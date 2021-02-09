@@ -2,23 +2,23 @@
 
 _Lift the curtain on Android Windows!_
 
-_Curtains_ provides centralized APIs for dealing with Android windows.
+Curtains provides centralized APIs for dealing with Android windows.
 
-Here are a few use cases that _Curtains_ enables:
+Here are a few use cases that Curtains enables:
 
 * Intercepting touch events on all windows: for logging, detecting frozen frames on touch,
 fixing known [bugs](https://issuetracker.google.com/issues/156666934) or ignoring touch events
 during transitions.
 * Knowing when root views are detached, e.g. to detect if they might be leaking ([LeakCanary](https://github.com/square/leakcanary)).
-* Listing all attached root views for debugging ([Radiography](https://github.com/square/radiography) or test purposes ([Espresso](https://github.com/android/android-test/blob/master/espresso/core/java/androidx/test/espresso/base/RootsOracle.java)).
+* Listing all attached root views for debugging ([Radiography](https://github.com/square/radiography)) or test purposes ([Espresso](https://github.com/android/android-test/blob/master/espresso/core/java/androidx/test/espresso/base/RootsOracle.java)).
+
+## Table of contents
 
 * [Usage](#usage)
 * [FAQ](#faq)
 * [License](#license)
 
 ## Usage
-
-**This library is `minSdkVersion(21)`** and otherwise a no-op.
 
 Add the `curtains` dependency to your library or app's `build.gradle` file:
 
@@ -34,17 +34,18 @@ The library has two main entry points, [Curtains.kt](https://github.com/square/c
 
 [Curtains.kt](https://github.com/square/curtains/blob/main/curtains/src/main/java/curtains/Curtains.kt)
 provides access to the current list of attached root views or windows, as well as the ability to
-set listeners to be notified of additions and removals.
+set listeners to be notified of additions and removals. This works on Android API 19+ and is
+otherwise a no-op.
 
 ```kotlin
-// Get notified of all attached / detached root views
+// Get notified of all attached / detached root views.
 Curtains.rootViewAttachStateListeners += ViewAttachStateListener { view, attached ->
   println("root $view attached: $attached")
 }
 ```
 
 ```kotlin
-// Get notified of all attached / detached Window instances (Activity, Dialog, DreamService)
+// Get notified of all attached / detached Window instances (Activity, Dialog, DreamService).
 Curtains.windowAttachStateListeners += WindowAttachStateListener { window, attached ->
   println("$window attached: $attached")
 }
@@ -63,7 +64,7 @@ window.touchEventInterceptors += TouchEventInterceptor { event, dispatch ->
 ```
 
 ```kotlin
-// Avoid the side effects of calling Window.getDecorView() too early
+// Avoid the side effects of calling Window.getDecorView() too early.
 window.onDecorViewReady { decorView ->
 }
 ```
@@ -77,7 +78,7 @@ window.onContentChangedListeners += OnContentChangedListener {
 ### All together
 
 ```kotlin
-// Log all touch events for all Window instances (Activity, Dialog, DreamService)
+// Log all touch events for all Window instances (Activity, Dialog, DreamService).
 class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
@@ -151,7 +152,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 The hooks leveraged by this library are also used by [Espresso](https://github.com/android/android-test/blob/master/espresso/core/java/androidx/test/espresso/base/RootsOracle.java),
-which makes it unlikely that they'll break in the future. On top of that, _Curtains_ has
+which makes it unlikely that they'll break in the future. On top of that, Curtains has
 comprehensive UI test coverage across several API levels.
 
 ### Does the Android Framework provide official APIs we can use instead of this?
@@ -165,7 +166,7 @@ complexity and many collaborators.
 
 Android developers need APIs to manage components in a centralized way, unfortunately, the Android
 Framework lacks many such APIs: tracking the lifecycle of Android windows (e.g. you can't know if a
-library shows a dialog), track the lifecycle of Android manifest components (services, providers,
+library shows a dialog), tracking the lifecycle of Android manifest components (services, providers,
 broadcast receiver) or accessing view state without subclassing.
 
 ### Who named this library?
