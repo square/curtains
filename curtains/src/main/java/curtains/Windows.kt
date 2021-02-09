@@ -81,8 +81,8 @@ fun Window.onDecorViewReady(onDecorViewReady: (View) -> Unit) {
     listeners.run {
       onContentChangedListeners += object : OnContentChangedListener {
         override fun onContentChanged() {
-          onDecorViewReady(peekDecorView())
           onContentChangedListeners -= this
+          onDecorViewReady(peekDecorView())
         }
       }
     }
