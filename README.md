@@ -34,8 +34,7 @@ The library has two main entry points, [Curtains.kt](https://github.com/square/c
 
 [Curtains.kt](https://github.com/square/curtains/blob/main/curtains/src/main/java/curtains/Curtains.kt)
 provides access to the current list of attached root views or windows, as well as the ability to
-set listeners to be notified of additions and removals. This works on Android API 19+ and is
-otherwise a no-op.
+set listeners to be notified of additions and removals.
 
 ```kotlin
 // Get notified of all attached / detached root views.
