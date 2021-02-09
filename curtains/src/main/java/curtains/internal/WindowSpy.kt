@@ -1,6 +1,8 @@
 package curtains.internal
 
+import android.os.Build
 import android.view.View
+import android.view.Window
 import curtains.ViewAttachStateListener
 import curtains.WindowAttachStateListener
 import curtains.window
@@ -15,8 +17,17 @@ internal class WindowSpy private constructor(private val rootViewsSpy: RootViews
 
   val listeners = CopyOnWriteArrayList<WindowAttachStateListener>()
 
-  fun windowListCopy() = rootViewsSpy.delegatingViewList.mapNotNull { view ->
-    DecorViewSpy.pullDecorViewWindow(view)
+  fun windowListCopy(): List<Window> {
+    return if (Build.VERSION.SDK_INT >= 19) {
+      rootViewsSpy.delegatingViewList.mapNotNull { view ->
+        DecorViewSpy.pullDecorViewWindow(view)
+      }
+    } else {
+      WindowManagerSpy.windowManagerMViewsArray()
+        .mapNotNull { view ->
+          DecorViewSpy.pullDecorViewWindow(view)
+        }
+    }
   }
 
   override fun onViewAttachStateChanged(

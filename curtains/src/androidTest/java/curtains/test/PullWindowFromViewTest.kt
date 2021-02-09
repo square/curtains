@@ -4,30 +4,25 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.PixelFormat
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
-import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
 import android.widget.PopupWindow
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.Truth.assertThat
-import curtains.Curtains
-import curtains.ViewAttachedListener
-import curtains.WindowAttachedListener
-import curtains.onDecorViewReady
-import curtains.test.utilities.BlockingResult
 import curtains.test.utilities.HasActivityScenarioRule
 import curtains.test.utilities.TestActivity
-import curtains.test.utilities.addUntilClosed
 import curtains.test.utilities.checkAwait
-import curtains.test.utilities.getOnMain
+import curtains.test.utilities.onAttachedToWindow
 import curtains.window
 import curtains.wrappedCallback
 import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicReference
 
 class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
 
@@ -72,58 +67,52 @@ class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
   }
 
   @Test fun viewPulledWindow_from_PopupWindow_Is_Null() {
-    val listeners = getOnMain { Curtains.rootViewAttachStateListeners }
-    val viewAttachedLatch = CountDownLatch(1)
-    listeners.addUntilClosed(ViewAttachedListener {
-      viewAttachedLatch.countDown()
-    }).use {
-      val (dialogContentView, popupWindow) = getOnActivity { activity ->
-        val activityContentView = activity.findViewById<View>(android.R.id.content)
-        val dialogContentView = TextView(activity).apply { text = "Yo" }
-        val popupWindow = PopupWindow(dialogContentView)
-        popupWindow.showAsDropDown(activityContentView)
-        dialogContentView to popupWindow
-      }
-
-      viewAttachedLatch.checkAwait()
-
-      onActivity {
-        assertThat(dialogContentView.window).isNull()
-        popupWindow.dismiss()
-      }
+    onActivity { activity ->
+      val popupContentView = TextView(activity).apply { text = "Popup" }
+      val popupWindow = PopupWindow(popupContentView)
+      val activityContentView = activity.findViewById<View>(android.R.id.content)
+      popupWindow.showAsDropDown(activityContentView)
+      assertThat(popupContentView.window).isNull()
+      popupWindow.dismiss()
     }
   }
 
   @Test fun spinnerViewPulledWindow_Is_DialogWindow() {
-    val listeners = getOnMain { Curtains.windowAttachStateListeners }
+    val itemViewCreated = CountDownLatch(1)
+    val itemViewRef = AtomicReference<View>()
 
-    val blockingResult = BlockingResult<View>()
+    onActivity { activity ->
+      val spinner = Spinner(activity, Spinner.MODE_DIALOG)
+      spinner.adapter = object : BaseAdapter() {
+        override fun getCount() = 1
+        override fun getItem(position: Int) = Unit
+        override fun getItemId(position: Int) = 1L
 
-    listeners.addUntilClosed(WindowAttachedListener { window ->
-      window.onDecorViewReady { decorView ->
-        decorView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-          override fun onGlobalLayout() {
-            val spinnerItemView = checkNotNull(decorView.findViewById(android.R.id.text1))
-            decorView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            blockingResult.release(spinnerItemView)
+        override fun getView(
+          position: Int,
+          convertView: View?,
+          parent: ViewGroup?
+        ): View {
+          val itemView = convertView ?: View(activity)
+          // Spinner leverages the adapter to show the selected entry.
+          if (parent !== spinner) {
+            itemView.onAttachedToWindow {
+              itemViewRef.set(itemView)
+              itemViewCreated.countDown()
+            }
           }
-        })
+          return itemView
+        }
       }
-    }).use {
-      onActivity { activity ->
-        val spinner = Spinner(activity, Spinner.MODE_DIALOG)
-        spinner.adapter = ArrayAdapter(
-          activity, android.R.layout.simple_list_item_1, arrayOf("Spinner item")
-        )
-        activity.setContentView(spinner)
+      activity.setContentView(spinner)
 
-        check(spinner.performClick())
-      }
+      check(spinner.performClick())
     }
 
-    val spinnerItemView = blockingResult.await()
+    itemViewCreated.checkAwait()
 
     onActivity {
+      val spinnerItemView = itemViewRef.get()!!
       assertThat(spinnerItemView.window!!.wrappedCallback).isInstanceOf(
         AlertDialog::class.java
       )

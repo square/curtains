@@ -28,12 +28,19 @@ jobs:
       # Allow tests to continue on other devices if they fail on one device.
       fail-fast: false
       matrix:
+        arch: [x86_64]
         api-level:
           - 21
           - 23
           - 26
           - 29
           - 30
+        include:
+          - arch: x86
+            api-level: 16
+          - arch: x86
+            api-level: 19
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -46,12 +53,12 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           target: google_apis
-          arch: x86_64
+          arch: ${{ matrix.arch }}
           script: ./gradlew connectedCheck --no-build-cache --no-daemon --stacktrace
 
       - name: Upload results
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.api-level }}-instrumentation-test-results
+          name: ${{ matrix.api-level }}-${{ matrix.arch }}-instrumentation-test-results
           path: ./**/build/reports/androidTests/connected/**

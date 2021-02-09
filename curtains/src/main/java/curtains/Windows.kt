@@ -1,5 +1,6 @@
 package curtains
 
+import android.os.Build
 import android.view.View
 import android.view.Window
 import android.view.windowAttachCount
@@ -108,9 +109,14 @@ fun Window.onDecorViewReady(onDecorViewReady: (View) -> Unit) {
  * Calling this has a side effect of wrapping the window callback (on first call), unless
  * the decor view was already set.
  *
+ * No-op below Android API 16.
+ *
  * @throws IllegalStateException if not called from the main thread.
  */
 fun Window.onNextDraw(onNextDraw: () -> Unit) {
+  if (Build.VERSION.SDK_INT < 16) {
+    return
+  }
   onDecorViewReady { decorView ->
     decorView.onNextDraw(onNextDraw)
   }
