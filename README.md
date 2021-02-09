@@ -53,7 +53,9 @@ Curtains.windowAttachStateListeners += WindowAttachStateListener { window, attac
 ### Windows.kt
 
 [Windows.kt](https://github.com/square/curtains/blob/main/curtains/src/main/java/curtains/Windows.kt)
-provides `android.view.Window` related extension functions.
+provides `android.view.Window` related extension functions. These functions do not apply to
+windows created by floating widgets (which leverage `android.widget.PopupWindow`) or by calling
+`android.view.WindowManager.addView` directly.
 
 ```kotlin
 // Intercept touch events at the window level.
