@@ -53,7 +53,7 @@ Curtains.windowAttachStateListeners += WindowAttachStateListener { window, attac
 ### Windows.kt
 
 [Windows.kt](https://github.com/square/curtains/blob/main/curtains/src/main/java/curtains/Windows.kt)
-provides window related extension functions.
+provides `android.view.Window` related extension functions.
 
 ```kotlin
 // Intercept touch events at the window level.
@@ -152,7 +152,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 The hooks leveraged by this library are also used by [Espresso](https://github.com/android/android-test/blob/master/espresso/core/java/androidx/test/espresso/base/RootsOracle.java),
 which makes it unlikely that they'll break in the future. On top of that, Curtains has
-comprehensive UI test coverage across several API levels.
+comprehensive UI test coverage across API levels 16 to 30.
 
 ### Does the Android Framework provide official APIs we can use instead of this?
 
