@@ -36,17 +36,25 @@ fun Application.registerUntilClosed(callbacks: ActivityLifecycleCallbacks): Clos
   }
 }
 
-fun assumeSdkBelow(
+fun assumeSdkAtMost(
   sdkInt: Int,
   reason: String
 ) {
-  val targetSdkVersion = application.applicationInfo.targetSdkVersion
   val currentVersion = Build.VERSION.SDK_INT
   Assume.assumeTrue(
-    "Can only run below API level $sdkInt because $reason. " +
-      "currentVersion: $currentVersion, " +
-      "targetSdkVersion: $targetSdkVersion.",
-    currentVersion < sdkInt || targetSdkVersion < sdkInt
+    "SDK Int $currentVersion > max $sdkInt: $reason",
+    currentVersion <= sdkInt
+  )
+}
+
+fun assumeSdkAtLeast(
+  sdkInt: Int,
+  reason: String
+) {
+  val currentVersion = Build.VERSION.SDK_INT
+  Assume.assumeTrue(
+    "SDK Int $currentVersion < min $sdkInt: $reason",
+    currentVersion >= sdkInt
   )
 }
 

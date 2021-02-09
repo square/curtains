@@ -15,7 +15,7 @@ android {
   }
 
   defaultConfig {
-    minSdkVersion(19)
+    minSdkVersion(14)
     targetSdkVersion(30)
     versionCode = 1
     versionName = "1.0"
@@ -43,6 +43,8 @@ tasks.withType<KotlinCompile> {
 }
 
 dependencies {
+
+  compileOnly(Dependencies.Build.AndroidXAnnotation)
 
   testImplementation(Dependencies.JUnit)
   testImplementation(Dependencies.Mockito)

@@ -8,7 +8,6 @@ import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
 import androidx.test.core.app.ActivityScenario
-import com.google.common.truth.Truth.assertThat
 import curtains.Curtains
 import curtains.ViewAttachStateListener
 import curtains.ViewAttachedListener
@@ -18,18 +17,20 @@ import curtains.WindowDetachedListener
 import curtains.test.utilities.CountDownLatchSubject.Companion.assertThat
 import curtains.test.utilities.TestActivity
 import curtains.test.utilities.addUntilClosed
-import curtains.test.utilities.assumeSdkBelow
+import curtains.test.utilities.assumeSdkAtLeast
+import curtains.test.utilities.assumeSdkAtMost
 import curtains.test.utilities.checkAwait
 import curtains.test.utilities.getOnActivity
 import curtains.test.utilities.getOnMain
+import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 
-class CurtainsTest {
+class CurtainsListenersTest {
 
-  @Test fun no_root_views_when_no_activity() {
-    assertThat(getOnMain { Curtains.attachedWindows }).isEmpty()
-    assertThat(getOnMain { Curtains.attachedRootViews }).isEmpty()
+  @Before
+  fun setUp() {
+    assumeSdkAtLeast(19, "WindowManagerGlobal.mViews was not backed by ArrayList prior to API 19")
   }
 
   @Test fun create_activity_attaches_window() {
@@ -86,7 +87,7 @@ class CurtainsTest {
   }
 
   @Test fun show_toast_attaches_root_view() {
-    assumeSdkBelow(29, "in Q, text toasts are rendered by SystemUI instead of in-app")
+    assumeSdkAtMost(28, "in Q, text toasts are rendered by SystemUI instead of in-app")
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       val viewAttachedLatch = CountDownLatch(1)
       val listeners = getOnMain { Curtains.rootViewAttachStateListeners }
@@ -107,7 +108,7 @@ class CurtainsTest {
   }
 
   @Test fun cancel_toast_detaches_root_view() {
-    assumeSdkBelow(29, "in Q, text toasts are rendered by SystemUI instead of in-app")
+    assumeSdkAtMost(28, "in Q, text toasts are rendered by SystemUI instead of in-app")
 
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       val viewAttachedLatch = CountDownLatch(1)

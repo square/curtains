@@ -1,5 +1,6 @@
 package curtains.internal
 
+import android.os.Build
 import android.view.View
 import curtains.ViewAttachStateListener
 import java.util.concurrent.CopyOnWriteArrayList
@@ -11,7 +12,13 @@ internal class RootViewsSpy private constructor() {
 
   val listeners = CopyOnWriteArrayList<ViewAttachStateListener>()
 
-  fun rootViewListCopy() = delegatingViewList.toList()
+  fun rootViewListCopy(): List<View> {
+    return if (Build.VERSION.SDK_INT >= 19) {
+      delegatingViewList.toList()
+    } else {
+      WindowManagerSpy.windowManagerMViewsArray().toList()
+    }
+  }
 
   val delegatingViewList = object : ArrayList<View>() {
     override fun add(element: View): Boolean {
@@ -29,7 +36,7 @@ internal class RootViewsSpy private constructor() {
   companion object {
     fun install(): RootViewsSpy {
       return RootViewsSpy().apply {
-        WindowManagerSpy.swapViewManagerGlobalMViews { mViews ->
+        WindowManagerSpy.swapWindowManagerGlobalMViews { mViews ->
           delegatingViewList.apply { addAll(mViews) }
         }
       }

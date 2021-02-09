@@ -31,8 +31,6 @@ import kotlin.LazyThreadSafetyMode.NONE
  * [rootViewAttachStateListeners] and [windowAttachStateListeners] allows apps to have a central
  * place where they can interact with newly added or removed windows. These are exposed as mutable
  * lists to allow apps to reorder or remove listeners added by libraries.
- *
- * Note: [Curtains] only works on Android API level 19+ and is otherwise a no op.
  */
 object Curtains {
 
@@ -81,6 +79,8 @@ object Curtains {
    * happens BEFORE [View.onAttachedToWindow] is invoked, as a view only becomes attached on the
    * next view traversal.
    *
+   * No-op below Android API 19, i.e. any listener added here will never be triggered.
+   *
    * @throws IllegalStateException if not called from the main thread.
    */
   @JvmStatic
@@ -104,6 +104,8 @@ object Curtains {
    * [android.view.WindowManager.removeView] are called. [android.view.WindowManager.addView]
    * happens BEFORE [View.onAttachedToWindow] is invoked, as a view only becomes attached on the
    * next view traversal.
+   *
+   * No-op below Android API 19, i.e. any listener added here will never be triggered.
    *
    * @throws IllegalStateException if not called from the main thread.
    */
