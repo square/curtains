@@ -83,6 +83,19 @@ val Window.onContentChangedListeners: MutableList<OnContentChangedListener>
   }
 
 /**
+ * The list of window focus changed listeners, inserted in [Window.Callback.onWindowFocusChanged].
+ *
+ * Calling this has a side effect of wrapping the window callback (on first call).
+ *
+ * @throws IllegalStateException if not called from the main thread.
+ */
+val Window.onWindowFocusChangedListeners: MutableList<OnWindowFocusChangedListener>
+  get() {
+    checkMainThread()
+    return listeners.onWindowFocusChangedListeners
+  }
+
+/**
  * Calls [onDecorViewReady] with the decor view when the [android.view.Window] has a decor view
  * available.
  *
