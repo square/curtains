@@ -35,6 +35,8 @@ class OnNextDrawTest {
 
   @Test fun onNextDraw_triggers_on_first_activity_draw() {
     val activityDrawn = CountDownLatch(CountOrder.values().size)
+    // Fix for API 16 flake where activity is resumed twice.
+    var activityResumed = false
     application.registerUntilClosed(OnActivityCreated { activity, _ ->
       if (activity !is TestActivity) {
         return@OnActivityCreated
@@ -48,6 +50,10 @@ class OnNextDrawTest {
         if (activity !is TestActivity) {
           return@OnActivityResumed
         }
+        if (activityResumed) {
+          return@OnActivityResumed
+        }
+        activityResumed = true
         var firstOnDrawn = true
         val decorView = activity.window.peekDecorView()!!
         decorView.onAttachedToWindow {
