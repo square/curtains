@@ -18,6 +18,8 @@ during transitions.
 * [FAQ](#faq)
 * [License](#license)
 
+![logo_512.png](assets/logo_512.png)
+
 ## Usage
 
 Add the `curtains` dependency to your library or app's `build.gradle` file:
