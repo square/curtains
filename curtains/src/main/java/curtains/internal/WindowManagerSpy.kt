@@ -1,7 +1,7 @@
 package curtains.internal
 
 import android.annotation.SuppressLint
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import android.view.View
 import kotlin.LazyThreadSafetyMode.NONE
@@ -14,7 +14,7 @@ import kotlin.LazyThreadSafetyMode.NONE
 internal object WindowManagerSpy {
 
   private val windowManagerClass by lazy(NONE) {
-    val className = if (Build.VERSION.SDK_INT > 16) {
+    val className = if (SDK_INT > 16) {
       "android.view.WindowManagerGlobal"
     } else {
       "android.view.WindowManagerImpl"
@@ -29,7 +29,7 @@ internal object WindowManagerSpy {
 
   private val windowManagerInstance by lazy(NONE) {
     windowManagerClass?.let { windowManagerClass ->
-      val methodName = if (Build.VERSION.SDK_INT > 16) {
+      val methodName = if (SDK_INT > 16) {
         "getInstance"
       } else {
         "getDefault"
@@ -47,7 +47,7 @@ internal object WindowManagerSpy {
   // You can discourage me all you want I'll still do it.
   @SuppressLint("PrivateApi", "ObsoleteSdkInt", "DiscouragedPrivateApi")
   fun swapWindowManagerGlobalMViews(swap: (ArrayList<View>) -> ArrayList<View>) {
-    if (Build.VERSION.SDK_INT < 19) {
+    if (SDK_INT < 19) {
       return
     }
     try {
@@ -64,7 +64,7 @@ internal object WindowManagerSpy {
   }
 
   fun windowManagerMViewsArray(): Array<View> {
-    val sdkInt = Build.VERSION.SDK_INT
+    val sdkInt = SDK_INT
     if (sdkInt >= 19) {
       return arrayOf()
     }

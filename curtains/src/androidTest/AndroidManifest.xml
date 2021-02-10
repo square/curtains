@@ -10,6 +10,9 @@
 
   <application>
     <activity android:name="curtains.test.utilities.TestActivity" />
+    <activity android:name="curtains.test.utilities.TestCompatActivity"
+        android:theme="@style/Theme.AppCompat"
+        />
   </application>
 </manifest>
 

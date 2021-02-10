@@ -9,11 +9,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.test.core.app.ActivityScenario
 import curtains.Curtains
-import curtains.ViewAttachStateListener
-import curtains.ViewAttachedListener
-import curtains.ViewDetachedListener
-import curtains.WindowAttachedListener
-import curtains.WindowDetachedListener
+import curtains.RootViewListener
+import curtains.RootViewAddedListener
+import curtains.RootViewRemovedListener
 import curtains.test.utilities.CountDownLatchSubject.Companion.assertThat
 import curtains.test.utilities.TestActivity
 import curtains.test.utilities.addUntilClosed
@@ -26,7 +24,7 @@ import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 
-class CurtainsListenersTest {
+class CurtainsRootViewListenersTest {
 
   @Before
   fun setUp() {
@@ -35,8 +33,8 @@ class CurtainsListenersTest {
 
   @Test fun create_activity_attaches_window() {
     val windowAttachedLatch = CountDownLatch(1)
-    val listeners = getOnMain { Curtains.windowAttachStateListeners }
-    listeners.addUntilClosed(WindowAttachedListener {
+    val listeners = getOnMain { Curtains.rootViewListeners }
+    listeners.addUntilClosed(RootViewAddedListener {
       windowAttachedLatch.countDown()
     }).use {
       ActivityScenario.launch(TestActivity::class.java).use {
@@ -47,8 +45,8 @@ class CurtainsListenersTest {
 
   @Test fun destroy_activity_detaches_window() {
     val windowDetachedLatch = CountDownLatch(1)
-    val listeners = getOnMain { Curtains.windowAttachStateListeners }
-    listeners.addUntilClosed(WindowDetachedListener {
+    val listeners = getOnMain { Curtains.rootViewListeners }
+    listeners.addUntilClosed(RootViewRemovedListener {
       windowDetachedLatch.countDown()
     }).use {
       ActivityScenario.launch(TestActivity::class.java).close()
@@ -59,8 +57,8 @@ class CurtainsListenersTest {
   @Test fun show_dialog_attaches_window() {
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       val windowAttachedLatch = CountDownLatch(1)
-      val listeners = getOnMain { Curtains.windowAttachStateListeners }
-      listeners.addUntilClosed(WindowAttachedListener {
+      val listeners = getOnMain { Curtains.rootViewListeners }
+      listeners.addUntilClosed(RootViewAddedListener {
         windowAttachedLatch.countDown()
       }).use {
         scenario.onActivity { activity ->
@@ -74,8 +72,8 @@ class CurtainsListenersTest {
   @Test fun hide_dialog_detaches_window() {
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       val windowDetachedLatch = CountDownLatch(1)
-      val listeners = getOnMain { Curtains.windowAttachStateListeners }
-      listeners.addUntilClosed(WindowDetachedListener {
+      val listeners = getOnMain { Curtains.rootViewListeners }
+      listeners.addUntilClosed(RootViewRemovedListener {
         windowDetachedLatch.countDown()
       }).use {
         scenario.onActivity { activity ->
@@ -90,8 +88,8 @@ class CurtainsListenersTest {
     assumeSdkAtMost(28, "in Q, text toasts are rendered by SystemUI instead of in-app")
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       val viewAttachedLatch = CountDownLatch(1)
-      val listeners = getOnMain { Curtains.rootViewAttachStateListeners }
-      listeners.addUntilClosed(ViewAttachedListener {
+      val listeners = getOnMain { Curtains.rootViewListeners }
+      listeners.addUntilClosed(RootViewAddedListener {
         viewAttachedLatch.countDown()
       }).use {
         val toast = scenario.getOnActivity { activity ->
@@ -113,8 +111,8 @@ class CurtainsListenersTest {
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       val viewAttachedLatch = CountDownLatch(1)
       val viewDetachedLatch = CountDownLatch(1)
-      val listeners = getOnMain { Curtains.rootViewAttachStateListeners }
-      listeners.addUntilClosed(ViewAttachStateListener { _, attached ->
+      val listeners = getOnMain { Curtains.rootViewListeners }
+      listeners.addUntilClosed(RootViewListener { _, attached ->
         if (attached) {
           viewAttachedLatch.countDown()
         } else {
@@ -138,8 +136,8 @@ class CurtainsListenersTest {
   @Test fun calling_WindowManager_addView_attaches_root_view() {
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       val viewAttachedLatch = CountDownLatch(1)
-      val listeners = getOnMain { Curtains.rootViewAttachStateListeners }
-      listeners.addUntilClosed(ViewAttachedListener {
+      val listeners = getOnMain { Curtains.rootViewListeners }
+      listeners.addUntilClosed(RootViewAddedListener {
         viewAttachedLatch.countDown()
       }).use {
         scenario.onActivity { activity ->
@@ -163,8 +161,8 @@ class CurtainsListenersTest {
   @Test fun calling_WindowManager_removeView_detaches_root_view() {
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       val viewDetachedLatch = CountDownLatch(1)
-      val listeners = getOnMain { Curtains.rootViewAttachStateListeners }
-      listeners.addUntilClosed(ViewDetachedListener {
+      val listeners = getOnMain { Curtains.rootViewListeners }
+      listeners.addUntilClosed(RootViewRemovedListener {
         viewDetachedLatch.countDown()
       }).use {
         scenario.onActivity { activity ->
