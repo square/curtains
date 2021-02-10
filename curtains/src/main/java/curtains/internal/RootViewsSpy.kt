@@ -2,7 +2,7 @@ package curtains.internal
 
 import android.os.Build
 import android.view.View
-import curtains.ViewAttachStateListener
+import curtains.RootViewListener
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -10,9 +10,9 @@ import java.util.concurrent.CopyOnWriteArrayList
  */
 internal class RootViewsSpy private constructor() {
 
-  val listeners = CopyOnWriteArrayList<ViewAttachStateListener>()
+  val listeners = CopyOnWriteArrayList<RootViewListener>()
 
-  fun rootViewListCopy(): List<View> {
+  fun copyRootViewList(): List<View> {
     return if (Build.VERSION.SDK_INT >= 19) {
       delegatingViewList.toList()
     } else {
@@ -20,15 +20,15 @@ internal class RootViewsSpy private constructor() {
     }
   }
 
-  val delegatingViewList = object : ArrayList<View>() {
+  private val delegatingViewList = object : ArrayList<View>() {
     override fun add(element: View): Boolean {
-      listeners.forEach { it.onViewAttachStateChanged(element, true) }
+      listeners.forEach { it.onRootViewsChanged(element, true) }
       return super.add(element)
     }
 
     override fun removeAt(index: Int): View {
       val removedView = super.removeAt(index)
-      listeners.forEach { it.onViewAttachStateChanged(removedView, false) }
+      listeners.forEach { it.onRootViewsChanged(removedView, false) }
       return removedView
     }
   }

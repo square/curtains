@@ -17,7 +17,7 @@ import curtains.test.utilities.HasActivityScenarioRule
 import curtains.test.utilities.TestActivity
 import curtains.test.utilities.checkAwait
 import curtains.test.utilities.onAttachedToWindow
-import curtains.window
+import curtains.phoneWindow
 import curtains.wrappedCallback
 import org.junit.Rule
 import org.junit.Test
@@ -32,7 +32,7 @@ class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
   @Test fun contentViewPulledWindow_Is_ActivityWindow() {
     onActivity { activity ->
       val contentView = activity.findViewById<View>(android.R.id.content)
-      assertThat(contentView.window).isSameInstanceAs(activity.window)
+      assertThat(contentView.phoneWindow).isSameInstanceAs(activity.window)
     }
   }
 
@@ -42,8 +42,10 @@ class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
       val dialog = AlertDialog.Builder(activity)
         .setView(dialogView)
         .show()
-      assertThat(dialogView.window).isSameInstanceAs(dialog.window)
-      assertThat(dialogView.window!!.wrappedCallback).isInstanceOf(AlertDialog::class.java)
+      assertThat(dialogView.phoneWindow).isSameInstanceAs(dialog.window)
+      assertThat(dialogView.phoneWindow!!.callback.wrappedCallback).isInstanceOf(
+        AlertDialog::class.java
+      )
       dialog.dismiss()
     }
   }
@@ -58,11 +60,11 @@ class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
         LayoutParams.FLAG_NOT_FOCUSABLE,
         PixelFormat.TRANSLUCENT
       )
-      val toastView = TextView(activity).apply { text = "Yo" }
-      windowManager.addView(toastView, params)
+      val rootView = TextView(activity).apply { text = "Yo" }
+      windowManager.addView(rootView, params)
 
-      assertThat(toastView.window).isNull()
-      windowManager.removeView(toastView)
+      assertThat(rootView.phoneWindow).isNull()
+      windowManager.removeView(rootView)
     }
   }
 
@@ -72,7 +74,7 @@ class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
       val popupWindow = PopupWindow(popupContentView)
       val activityContentView = activity.findViewById<View>(android.R.id.content)
       popupWindow.showAsDropDown(activityContentView)
-      assertThat(popupContentView.window).isNull()
+      assertThat(popupContentView.phoneWindow).isNull()
       popupWindow.dismiss()
     }
   }
@@ -113,7 +115,7 @@ class PullWindowFromViewTest : HasActivityScenarioRule<TestActivity> {
 
     onActivity {
       val spinnerItemView = itemViewRef.get()!!
-      assertThat(spinnerItemView.window!!.wrappedCallback).isInstanceOf(
+      assertThat(spinnerItemView.phoneWindow!!.callback.wrappedCallback).isInstanceOf(
         AlertDialog::class.java
       )
     }

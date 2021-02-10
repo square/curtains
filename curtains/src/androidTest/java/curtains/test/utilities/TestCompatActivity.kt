@@ -1,11 +1,11 @@
 
 package curtains.test.utilities
 
-import android.app.Activity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.squareup.curtains.test.R
 
-class TestActivity : Activity() {
+class TestCompatActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

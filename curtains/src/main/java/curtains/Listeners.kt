@@ -5,113 +5,57 @@ import android.view.View
 import android.view.Window
 
 /**
- * Listener added to [Curtains.rootViewAttachStateListeners].
- * If you only care about either attached or detached, consider implementing [ViewAttachedListener]
- * or [ViewDetachedListener] instead.
+ * Listener added to [Curtains.rootViewListeners].
+ * If you only care about either attached or detached, consider implementing [RootViewAddedListener]
+ * or [RootViewRemovedListener] instead.
  */
-fun interface ViewAttachStateListener {
+fun interface RootViewListener {
   /**
    * Called when [android.view.WindowManager.addView] and [android.view.WindowManager.removeView]
    * are called.
    */
-  fun onViewAttachStateChanged(
+  fun onRootViewsChanged(
     view: View,
-    attached: Boolean
+    added: Boolean
   )
 }
 
 /**
- * Listener added to [Curtains.rootViewAttachStateListeners].
+ * Listener added to [Curtains.rootViewListeners].
  */
-fun interface ViewAttachedListener : ViewAttachStateListener {
-  override fun onViewAttachStateChanged(
+fun interface RootViewAddedListener : RootViewListener {
+  override fun onRootViewsChanged(
     view: View,
-    attached: Boolean
+    added: Boolean
   ) {
-    if (attached) {
-      onViewAttached(view)
+    if (added) {
+      onRootViewAdded(view)
     }
   }
 
   /**
    * Called when [android.view.WindowManager.addView] is called.
    */
-  fun onViewAttached(view: View)
+  fun onRootViewAdded(view: View)
 }
 
 /**
- * Listener added to [Curtains.rootViewAttachStateListeners].
+ * Listener added to [Curtains.rootViewListeners].
  */
-fun interface ViewDetachedListener : ViewAttachStateListener {
-  override fun onViewAttachStateChanged(
+fun interface RootViewRemovedListener : RootViewListener {
+  override fun onRootViewsChanged(
     view: View,
-    attached: Boolean
+    added: Boolean
   ) {
-    if (!attached) {
-      onViewDetached(view)
+    if (!added) {
+      onRootViewRemoved(view)
     }
   }
 
   /**
    * Called when [android.view.WindowManager.removeView] is called.
    */
-  fun onViewDetached(view: View)
-}
-
-/**
- * Listener added to [Curtains.windowAttachStateListeners].
- * If you only care about either attached or detached, consider implementing [WindowAttachedListener]
- * or [WindowDetachedListener] instead.
- */
-fun interface WindowAttachStateListener {
-  /**
-   * Called when [android.view.WindowManager.addView] and [android.view.WindowManager.removeView]
-   * are called and the provided view is a decor view wrapping a [android.view.Window] instance.
-   */
-  fun onWindowAttachStateChanged(
-    window: Window,
-    attached: Boolean
-  )
-}
-
-/**
- * Listener added to [Curtains.windowAttachStateListeners].
- */
-fun interface WindowAttachedListener : WindowAttachStateListener {
-  override fun onWindowAttachStateChanged(
-    window: Window,
-    attached: Boolean
-  ) {
-    if (attached) {
-      onWindowAttached(window)
-    }
-  }
-
-  /**
-   * Called when [android.view.WindowManager.addView] is called and the provided view is a decor
-   * view wrapping a [android.view.Window] instance.
-   */
-  fun onWindowAttached(window: Window)
-}
-
-/**
- * Listener added to [Curtains.windowAttachStateListeners].
- */
-fun interface WindowDetachedListener : WindowAttachStateListener {
-  override fun onWindowAttachStateChanged(
-    window: Window,
-    attached: Boolean
-  ) {
-    if (!attached) {
-      onWindowDetached(window)
-    }
-  }
-
-  /**
-   * Called when [android.view.WindowManager.removeView] is called and the provided view is a decor
-   * view wrapping a [android.view.Window] instance.
-   */
-  fun onWindowDetached(window: Window)
+  fun onRootViewRemoved(view: View)
 }
 
 /**

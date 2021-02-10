@@ -6,7 +6,7 @@ Curtains provides centralized APIs for dealing with Android windows.
 
 Here are a few use cases that Curtains enables:
 
-* Intercepting touch events on all windows: for logging, detecting frozen frames on touch,
+* Intercepting touch events on all activities and dialogs: for logging, detecting frozen frames on touch,
 fixing known [bugs](https://issuetracker.google.com/issues/156666934) or ignoring touch events
 during transitions.
 * Knowing when root views are detached, e.g. to detect if they might be leaking ([LeakCanary](https://github.com/square/leakcanary)).
@@ -33,67 +33,90 @@ The library has two main entry points, [Curtains.kt](https://github.com/square/c
 ### Curtains.kt
 
 [Curtains.kt](https://github.com/square/curtains/blob/main/curtains/src/main/java/curtains/Curtains.kt)
-provides access to the current list of attached root views or windows, as well as the ability to
-set listeners to be notified of additions and removals.
+provides access to the current root views (`Curtains.rootViews`), as well as the ability to set
+listeners to get notified of additions and removals:
 
 ```kotlin
-// Get notified of all attached / detached root views.
-Curtains.rootViewAttachStateListeners += ViewAttachStateListener { view, attached ->
-  println("root $view attached: $attached")
-}
-```
-
-```kotlin
-// Get notified of all attached / detached Window instances (Activity, Dialog, DreamService).
-Curtains.windowAttachStateListeners += WindowAttachStateListener { window, attached ->
-  println("$window attached: $attached")
+Curtains.rootViewListeners += RootViewListener { view, added ->
+  println("root $view ${if (added) "added" else "removed"}")
 }
 ```
 
 ### Windows.kt
 
 [Windows.kt](https://github.com/square/curtains/blob/main/curtains/src/main/java/curtains/Windows.kt)
-provides `android.view.Window` related extension functions. These functions do not apply to
-windows created by floating widgets (which leverage `android.widget.PopupWindow`) or by calling
-`android.view.WindowManager.addView` directly.
+provides window related extension functions.
+
+New Android windows are created by calling
+`[WindowManager.addView()](https://developer.android.com/reference/android/view/WindowManager)`,
+and the Android Framework calls `WindowManager.addView()` for you in many different places.
+`View.windowType` helps figure out what widget added a root view:
 
 ```kotlin
-// Intercept touch events at the window level.
+when(view.windowType) {
+  PHONE_WINDOW -> TODO("View attached to an Activity or Dialog")
+  POPUP_WINDOW -> TODO("View attached to a PopupWindow")
+  TOOLTIP -> TODO("View attached to a tooltip")
+  TOAST -> TODO("View attached to a toast")
+  UNKNOWN -> TODO("?!? is this view attached? Is this Android 42?")
+}
+```
+
+If `View.windowType` returns `PHONE_WINDOW`, you can then retrieve the corresponding
+`android.view.Window` instance:
+
+[Windows.kt](https://github.com/square/curtains/blob/main/curtains/src/main/java/curtains/Windows.kt)
+provides window related extension functions.
+
+```kotlin
+val window: Window? = view.phoneWindow
+```
+
+Once you have a `android.view.Window` instance, you can easily intercept touch events:
+
+```kotlin
 window.touchEventInterceptors += TouchEventInterceptor { event, dispatch ->
   dispatch(event)
 }
 ```
 
+Or set a callback to avoid the side effects of calling Window.getDecorView() too early:
+
 ```kotlin
-// Avoid the side effects of calling Window.getDecorView() too early.
 window.onDecorViewReady { decorView ->
 }
 ```
 
+Or react when `setContentView()` is called:
+
 ```kotlin
-// React when setContentView() is called.
 window.onContentChangedListeners += OnContentChangedListener {
 }
 ```
 
 ### All together
 
+We can combine these APIs to log touch events for all `android.view.Window` instances:
 ```kotlin
-// Log all touch events for all Window instances (Activity, Dialog, DreamService).
 class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 
-    Curtains.windowAttachStateListeners += WindowAttachedListener { window ->
-      if (window.decorView.windowAttachCount == 0) {
-        window.touchEventInterceptors += TouchEventListener { motionEvent ->
-          Log.d("ExampleApplication", "$window received $motionEvent")
+    Curtains.rootViewListeners += RootViewAddedListener { view ->
+      view.phoneWindow?.let { window ->
+        if (view.windowAttachCount == 0) {
+          window.touchEventInterceptors += TouchEventListener { motionEvent ->
+            Log.d("ExampleApplication", "$window received $motionEvent")
+          }
         }
       }
     }
+
   }
 }
 ```
+
+Or measure the elapsed time from when a window is added to when it is fully draw:
 
 ```kotlin
 // Measure the time from when a window is added to when it is fully drawn.
@@ -103,13 +126,15 @@ class ExampleApplication : Application() {
 
     val handler = Handler(Looper.getMainLooper())
 
-    Curtains.windowAttachStateListeners += WindowAttachedListener { window ->
-      val windowAddedAt = SystemClock.uptimeMillis()
-      window.onNextDraw {
-        // Post at front to fully account for drawing time.
-        handler.postAtFrontOfQueue {
-          val duration = SystemClock.uptimeMillis() - windowAddedAt
-          Log.d("ExampleApplication", "$window fully drawn in $duration ms")
+    Curtains.windowAttachStateListeners += RootViewAddedListener { view ->
+      view.phoneWindow?.let { window ->
+        val windowAddedAt = SystemClock.uptimeMillis()
+        window.onNextDraw {
+          // Post at front to fully account for drawing time.
+          handler.postAtFrontOfQueue {
+            val duration = SystemClock.uptimeMillis() - windowAddedAt
+            Log.d("ExampleApplication", "$window fully drawn in $duration ms")
+          }
         }
       }
     }

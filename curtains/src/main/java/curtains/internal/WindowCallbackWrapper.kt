@@ -4,6 +4,7 @@ import android.view.MotionEvent
 import android.view.Window
 import curtains.DispatchState
 import curtains.DispatchState.Consumed
+import kotlin.LazyThreadSafetyMode.NONE
 
 /**
  * Replaces the default Window callback to allows adding listeners / interceptors
@@ -46,6 +47,26 @@ internal class WindowCallbackWrapper constructor(
   }
 
   companion object {
+
+    private val jetpackWrapperClass by lazy(NONE) {
+      try {
+        Class.forName("androidx.appcompat.view.WindowCallbackWrapper")
+      } catch (ignored: Throwable) {
+        Class.forName("android.support.v7.view.WindowCallbackWrapper")
+        null
+      }
+    }
+
+    private val jetpackWrappedField by lazy(NONE) {
+      jetpackWrapperClass?.let { jetpackWrapperClass ->
+        try {
+          jetpackWrapperClass.getDeclaredField("mWrapped").apply { isAccessible = true }
+        } catch (ignored: Throwable) {
+          null
+        }
+      }
+    }
+
     val Window.listeners: WindowListeners
       get() {
         return when (val currentCallback = callback) {
@@ -61,15 +82,17 @@ internal class WindowCallbackWrapper constructor(
         }
       }
 
-    val Window.wrappedCallbackOrNull: Window.Callback?
-      get() {
-        return when (val currentCallback = callback) {
-          // We expect a window to always have a default callback
-          // that we can delegate to, but who knows what apps can be up to.
-          null -> null
-          is WindowCallbackWrapper -> currentCallback.delegate
-          else -> currentCallback
-        }
+    private fun Window.Callback.canUnwrapFromJetpack(): Boolean {
+      return jetpackWrappedField != null && jetpackWrapperClass!!.isInstance(this)
+    }
+
+    tailrec fun Window.Callback?.unwrap(): Window.Callback? {
+      return when {
+        this == null -> null
+        this is WindowCallbackWrapper -> delegate.unwrap()
+        canUnwrapFromJetpack() -> (jetpackWrappedField!![this] as Window.Callback?).unwrap()
+        else -> this
       }
+    }
   }
 }

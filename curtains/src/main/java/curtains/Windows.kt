@@ -3,27 +3,54 @@ package curtains
 import android.os.Build
 import android.view.View
 import android.view.Window
+import android.view.WindowManager
 import android.view.windowAttachCount
-import curtains.internal.DecorViewSpy
+import curtains.WindowType.PHONE_WINDOW
+import curtains.WindowType.POPUP_WINDOW
+import curtains.WindowType.TOAST
+import curtains.WindowType.TOOLTIP
+import curtains.WindowType.UNKNOWN
 import curtains.internal.NextDrawListener.Companion.onNextDraw
 import curtains.internal.WindowCallbackWrapper.Companion.listeners
-import curtains.internal.WindowCallbackWrapper.Companion.wrappedCallbackOrNull
+import curtains.internal.WindowCallbackWrapper.Companion.unwrap
+import curtains.internal.WindowSpy
 import curtains.internal.checkMainThread
 
 /**
- * Extracts the [android.view.Window] instance associated to this view hierarchy using
- * reflection, or null if there isn't one.
- *
  * If this view is part of the view hierarchy from a [android.app.Activity], [android.app.Dialog] or
- * [android.services.Dream], then the root of its hierarchy is a decor view and that
- * decor view holds the [android.view.Window] instance that will be returned.
+ * [android.service.dreams.DreamService], then this returns the [android.view.Window] instance
+ * associated to it. Otherwise, this returns null.
+ *
+ * Note: this property is called [phoneWindow] because the only implementation of [Window] is
+ * the internal class android.view.PhoneWindow.
  *
  * @throws IllegalStateException if not called from the main thread.
  */
-val View.window: Window?
+val View.phoneWindow: Window?
   get() {
     checkMainThread()
-    return DecorViewSpy.pullDecorViewWindow(rootView)
+    return WindowSpy.pullWindow(rootView)
+  }
+
+val View.windowType: WindowType
+  get() {
+    checkMainThread()
+    val rootView = rootView
+    if (WindowSpy.attachedToPhoneWindow(rootView)) {
+      return PHONE_WINDOW
+    }
+    val windowLayoutParams = rootView.layoutParams as? WindowManager.LayoutParams
+    return if (windowLayoutParams == null) {
+      UNKNOWN
+    } else {
+      val title = windowLayoutParams.title
+      when {
+        title == "Toast" -> TOAST
+        title == "Tooltip" -> TOOLTIP
+        title.startsWith("PopupWindow:") -> POPUP_WINDOW
+        else -> UNKNOWN
+      }
+    }
   }
 
 /**
@@ -138,14 +165,16 @@ val View.windowAttachCount: Int
  * Returns the original window callback.
  *
  * The helper functions provided in this file replace the original window callback and delegate to
- * it. [wrappedCallback] returns the callback that was replaced. This is useful to check its
- * type.
+ * it. Jetpack libraries (Android X and previously the support library) also replace the window
+ * callback for activities. [wrappedCallback] returns the callback that was replaced. This is
+ * useful to check its type, which should be either [android.app.Activity], [android.app.Dialog] or
+ * [android.service.dreams.DreamService]
  *
- * Note that this may be null if the Window didn't have a callback set, which normally doesn't
+ * Note that this may be null if the Window doesn't have a callback set, which normally doesn't
  * happen.
  */
-val Window.wrappedCallback: Window.Callback?
+val Window.Callback?.wrappedCallback: Window.Callback?
   get() {
     checkMainThread()
-    return wrappedCallbackOrNull
+    return unwrap()
   }
