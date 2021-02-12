@@ -8,20 +8,13 @@ import curtains.OnWindowFocusChangedListener
 import curtains.onWindowFocusChangedListeners
 import curtains.test.utilities.TestActivity
 import curtains.test.utilities.application
-import curtains.test.utilities.assumeSdkAtMost
 import curtains.test.utilities.launchWaitingForFocus
 import curtains.test.utilities.registerUntilClosed
 import curtains.test.utilities.BlockingQueueSubject.Companion.assertThat
-import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.ArrayBlockingQueue
 
 class OnWindowFocusChangedListenersTest {
-
-  @Before
-  fun setUp() {
-    assumeSdkAtMost(29, "Can't repro locally: TestActivity never gets focus in CI on API 30")
-  }
 
   @Test
   fun activity_focus_gained_on_activity_resumed() {

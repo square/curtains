@@ -23,9 +23,9 @@ class TouchEventInterceptorsTest : HasActivityScenarioRule<TestActivity> {
   override val rule = ActivityScenarioRule(TestActivity::class.java)
 
   @Test fun touchEvent_dispatched_to_listeners() {
+    val touchEventReceived = CountDownLatch(2)
     onActivity { activity ->
       val cancelEvent = cancelEvent()
-      val touchEventReceived = CountDownLatch(2)
       activity.window.touchEventInterceptors += TouchEventListener { event ->
         touchEventReceived.countDown()
         assertThat(event).isSameInstanceAs(cancelEvent)
@@ -40,9 +40,8 @@ class TouchEventInterceptorsTest : HasActivityScenarioRule<TestActivity> {
       }
 
       rootView.dispatchTouchEvent(cancelEvent)
-
-      assertThat(touchEventReceived).countsToZero()
     }
+    assertThat(touchEventReceived).countsToZero()
   }
 
   @Test fun touchEvent_intercepted() {

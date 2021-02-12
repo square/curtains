@@ -4,15 +4,15 @@ import android.app.Activity
 import android.app.Application
 import android.app.Application.ActivityLifecycleCallbacks
 import android.os.Build
+import android.os.ParcelFileDescriptor
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
 import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
-import curtains.Curtains
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 import curtains.OnWindowFocusChangedListener
-import curtains.internal.WindowCallbackWrapper.Companion.unwrap
 import curtains.onWindowFocusChangedListeners
-import curtains.phoneWindow
 import org.junit.Assume
 import java.io.Closeable
 import java.util.concurrent.ArrayBlockingQueue
@@ -105,9 +105,24 @@ fun View.onAttachedToWindow(onAttachedToWindow: () -> Unit) {
 }
 
 fun <T : Activity> launchWaitingForFocus(activityClass: KClass<T>): ActivityScenario<T> {
-  val activityHasWindowFocus = ArrayBlockingQueue<Boolean>(1)
   val scenario = ActivityScenario.launch(activityClass.java)
-  scenario.onActivity { activity ->
+  var hasFocus = scenario.waitForFocus()
+  if (hasFocus == null) {
+    resolveAnr()
+  }
+  hasFocus = scenario.waitForFocus()
+  if (hasFocus == null) {
+    dumpWindowService()
+  }
+  check(hasFocus) {
+    "expected activity to become focused"
+  }
+  return scenario
+}
+
+private fun <T : Activity> ActivityScenario<T>.waitForFocus(): Boolean? {
+  val activityHasWindowFocus = ArrayBlockingQueue<Boolean>(1)
+  onActivity { activity ->
     if (activity.hasWindowFocus()) {
       activityHasWindowFocus.put(true)
     } else {
@@ -119,13 +134,20 @@ fun <T : Activity> launchWaitingForFocus(activityClass: KClass<T>): ActivityScen
       }
     }
   }
-  val hasFocus = activityHasWindowFocus.poll(30, TimeUnit.SECONDS) // TODO checkPoll
-  if (hasFocus == null) {
-    val windows = getOnMain { Curtains.rootViews.joinToString(separator = "\n") { "$it focus: ${it.hasWindowFocus()} callback: ${it.phoneWindow?.callback?.unwrap()}" } }
-    error("30 seconds elapsed without count coming down. Windows:\n$windows")
-  }
-  check(hasFocus) {
-    "expected activity to become focused"
-  }
-  return scenario
+  return activityHasWindowFocus.poll(10, TimeUnit.SECONDS) // TODO checkPoll
+}
+
+private fun resolveAnr() {
+  val instrumentation = InstrumentationRegistry.getInstrumentation()
+  val uiDevice = UiDevice.getInstance(instrumentation)
+  uiDevice.findObject(UiSelector().resourceId("android:id/aerr_wait"))?.click()
+}
+
+private fun dumpWindowService(): Nothing {
+  val dump = InstrumentationRegistry.getInstrumentation()
+      .uiAutomation
+      .executeShellCommand("dumpsys window")
+      .let(ParcelFileDescriptor::AutoCloseInputStream)
+      .bufferedReader().useLines { it.joinToString("\n|") }
+  throw RuntimeException(dump)
 }

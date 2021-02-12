@@ -32,14 +32,14 @@ class OnDecorViewReadyTest {
   }
 
   @Test fun onDecorViewReady_triggers_immediately_if_contentView_set() {
+    val decorViewReady = CountDownLatch(1)
     ActivityScenario.launch(TestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
-        val decorViewReady = CountDownLatch(1)
         activity.window.onDecorViewReady {
           decorViewReady.countDown()
         }
-        assertThat(decorViewReady).countsToZero()
       }
     }
+    assertThat(decorViewReady).countsToZero()
   }
 }
