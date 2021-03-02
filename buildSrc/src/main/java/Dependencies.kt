@@ -10,7 +10,7 @@ object Versions {
 
 object Dependencies {
   object Build {
-    const val Android = "com.android.tools.build:gradle:4.2.0-beta04"
+    const val Android = "com.android.tools.build:gradle:4.2.0-beta05"
     const val MavenPublish = "com.vanniktech:gradle-maven-publish-plugin:0.12.0"
     val Kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.KotlinCompiler}"
     const val Ktlint = "org.jlleitschuh.gradle:ktlint-gradle:9.2.1"
@@ -19,7 +19,6 @@ object Dependencies {
   }
 
   const val AppCompat = "androidx.appcompat:appcompat:1.2.0"
-  const val ConstraintLayout = "androidx.constraintlayout:constraintlayout:1.1.3"
   const val JUnit = "junit:junit:4.13"
   const val Mockito = "org.mockito:mockito-core:3.4.6"
   const val Robolectric = "org.robolectric:robolectric:4.3.1"
