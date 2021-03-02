@@ -46,6 +46,11 @@ internal class WindowCallbackWrapper constructor(
     delegate.onContentChanged()
   }
 
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    listeners.onWindowFocusChangedListeners.forEach { it.onWindowFocusChanged(hasFocus) }
+    delegate.onWindowFocusChanged(hasFocus)
+  }
+
   companion object {
 
     private val jetpackWrapperClass by lazy(NONE) {

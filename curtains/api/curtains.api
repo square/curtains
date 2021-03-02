@@ -130,6 +130,10 @@ public abstract interface class curtains/OnContentChangedListener {
 	public abstract fun onContentChanged ()V
 }
 
+public abstract interface class curtains/OnWindowFocusChangedListener {
+	public abstract fun onWindowFocusChanged (Z)V
+}
+
 public abstract interface class curtains/RootViewAddedListener : curtains/RootViewListener {
 	public abstract fun onRootViewAdded (Landroid/view/View;)V
 	public abstract fun onRootViewsChanged (Landroid/view/View;Z)V
@@ -177,6 +181,7 @@ public final class curtains/WindowType : java/lang/Enum {
 
 public final class curtains/WindowsKt {
 	public static final fun getOnContentChangedListeners (Landroid/view/Window;)Ljava/util/List;
+	public static final fun getOnWindowFocusChangedListeners (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getPhoneWindow (Landroid/view/View;)Landroid/view/Window;
 	public static final fun getTouchEventInterceptors (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getWindowAttachCount (Landroid/view/View;)I

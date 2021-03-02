@@ -56,6 +56,7 @@ dependencies {
   androidTestImplementation(Dependencies.InstrumentationTests.JUnit)
   androidTestImplementation(Dependencies.InstrumentationTests.Rules)
   androidTestImplementation(Dependencies.InstrumentationTests.Runner)
+  androidTestImplementation(Dependencies.InstrumentationTests.UiAutomator)
   androidTestImplementation(Dependencies.Truth)
   androidTestImplementation(Dependencies.AppCompat)
 
