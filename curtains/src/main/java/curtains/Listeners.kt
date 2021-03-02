@@ -105,3 +105,13 @@ fun interface OnContentChangedListener {
    */
   fun onContentChanged()
 }
+
+/**
+ * Listener added to [Window.onWindowFocusChangedListeners].
+ */
+fun interface OnWindowFocusChangedListener {
+  /**
+   * Called when [android.view.Window.Callback.onWindowFocusChanged] is called.
+   */
+  fun onWindowFocusChanged(hasFocus: Boolean)
+}

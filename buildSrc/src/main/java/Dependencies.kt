@@ -32,5 +32,6 @@ object Dependencies {
     const val Orchestrator = "androidx.test:orchestrator:${Versions.AndroidXTest}"
     const val Rules = "androidx.test:rules:${Versions.AndroidXTest}"
     const val Runner = "androidx.test:runner:${Versions.AndroidXTest}"
+    const val UiAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
   }
 }
