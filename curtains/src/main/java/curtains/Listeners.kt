@@ -5,11 +5,11 @@ import android.view.View
 import android.view.Window
 
 /**
- * Listener added to [Curtains.rootViewListeners].
- * If you only care about either attached or detached, consider implementing [RootViewAddedListener]
- * or [RootViewRemovedListener] instead.
+ * Listener added to [Curtains.onRootViewsChangedListeners].
+ * If you only care about either attached or detached, consider implementing [OnRootViewAddedListener]
+ * or [OnRootViewRemovedListener] instead.
  */
-fun interface RootViewListener {
+fun interface OnRootViewsChangedListener {
   /**
    * Called when [android.view.WindowManager.addView] and [android.view.WindowManager.removeView]
    * are called.
@@ -21,9 +21,14 @@ fun interface RootViewListener {
 }
 
 /**
- * Listener added to [Curtains.rootViewListeners].
+ * Listener added to [Curtains.onRootViewsChangedListeners].
  */
-fun interface RootViewAddedListener : RootViewListener {
+fun interface OnRootViewAddedListener : OnRootViewsChangedListener {
+  /**
+   * Called when [android.view.WindowManager.addView] is called.
+   */
+  fun onRootViewAdded(view: View)
+
   override fun onRootViewsChanged(
     view: View,
     added: Boolean
@@ -32,17 +37,17 @@ fun interface RootViewAddedListener : RootViewListener {
       onRootViewAdded(view)
     }
   }
-
-  /**
-   * Called when [android.view.WindowManager.addView] is called.
-   */
-  fun onRootViewAdded(view: View)
 }
 
 /**
- * Listener added to [Curtains.rootViewListeners].
+ * Listener added to [Curtains.onRootViewsChangedListeners].
  */
-fun interface RootViewRemovedListener : RootViewListener {
+fun interface OnRootViewRemovedListener : OnRootViewsChangedListener {
+  /**
+   * Called when [android.view.WindowManager.removeView] is called.
+   */
+  fun onRootViewRemoved(view: View)
+
   override fun onRootViewsChanged(
     view: View,
     added: Boolean
@@ -51,18 +56,13 @@ fun interface RootViewRemovedListener : RootViewListener {
       onRootViewRemoved(view)
     }
   }
-
-  /**
-   * Called when [android.view.WindowManager.removeView] is called.
-   */
-  fun onRootViewRemoved(view: View)
 }
 
 /**
  * Interceptor added to [Window.touchEventInterceptors].
  *
  * If you only care about logging touch events without intercepting, consider implementing
- * [TouchEventListener] instead.
+ * [OnTouchEventListener] instead.
  */
 fun interface TouchEventInterceptor {
   /**
@@ -81,7 +81,12 @@ fun interface TouchEventInterceptor {
 /**
  * Listener added to [Window.touchEventInterceptors].
  */
-fun interface TouchEventListener : TouchEventInterceptor {
+fun interface OnTouchEventListener : TouchEventInterceptor {
+  /**
+   * Called when [android.view.Window.Callback.dispatchTouchEvent] is called.
+   */
+  fun onTouchEvent(motionEvent: MotionEvent)
+
   override fun intercept(
     motionEvent: MotionEvent,
     dispatch: (MotionEvent) -> DispatchState
@@ -89,11 +94,6 @@ fun interface TouchEventListener : TouchEventInterceptor {
     onTouchEvent(motionEvent)
     return dispatch(motionEvent)
   }
-
-  /**
-   * Called when [android.view.Window.Callback.dispatchTouchEvent] is called.
-   */
-  fun onTouchEvent(motionEvent: MotionEvent)
 }
 
 /**
@@ -114,4 +114,26 @@ fun interface OnWindowFocusChangedListener {
    * Called when [android.view.Window.Callback.onWindowFocusChanged] is called.
    */
   fun onWindowFocusChanged(hasFocus: Boolean)
+}
+
+fun interface OnWindowFocusGainedListener : OnWindowFocusChangedListener {
+
+  fun onWindowFocusGained()
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    if (hasFocus) {
+      onWindowFocusGained()
+    }
+  }
+}
+
+fun interface OnWindowFocusLostListener : OnWindowFocusChangedListener {
+
+  fun onWindowFocusGained()
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    if (!hasFocus) {
+      onWindowFocusGained()
+    }
+  }
 }

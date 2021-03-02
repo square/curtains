@@ -39,7 +39,7 @@ provides access to the current root views (`Curtains.rootViews`), as well as the
 listeners to get notified of additions and removals:
 
 ```kotlin
-Curtains.rootViewListeners += RootViewListener { view, added ->
+Curtains.onRootViewsChangedListeners += OnRootViewsChangedListener { view, added ->
   println("root $view ${if (added) "added" else "removed"}")
 }
 ```
@@ -104,10 +104,10 @@ class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 
-    Curtains.rootViewListeners += RootViewAddedListener { view ->
+    Curtains.onRootViewsChangedListeners += OnRootViewAddedListener { view ->
       view.phoneWindow?.let { window ->
         if (view.windowAttachCount == 0) {
-          window.touchEventInterceptors += TouchEventListener { motionEvent ->
+          window.touchEventInterceptors += OnTouchEventListener { motionEvent ->
             Log.d("ExampleApplication", "$window received $motionEvent")
           }
         }
@@ -128,7 +128,7 @@ class ExampleApplication : Application() {
 
     val handler = Handler(Looper.getMainLooper())
 
-    Curtains.windowAttachStateListeners += RootViewAddedListener { view ->
+    Curtains.onRootViewsChangedListeners += OnRootViewAddedListener { view ->
       view.phoneWindow?.let { window ->
         val windowAddedAt = SystemClock.uptimeMillis()
         window.onNextDraw {

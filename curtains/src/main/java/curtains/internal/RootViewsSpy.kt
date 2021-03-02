@@ -2,7 +2,7 @@ package curtains.internal
 
 import android.os.Build
 import android.view.View
-import curtains.RootViewListener
+import curtains.OnRootViewsChangedListener
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  */
 internal class RootViewsSpy private constructor() {
 
-  val listeners = CopyOnWriteArrayList<RootViewListener>()
+  val listeners = CopyOnWriteArrayList<OnRootViewsChangedListener>()
 
   fun copyRootViewList(): List<View> {
     return if (Build.VERSION.SDK_INT >= 19) {
