@@ -3,7 +3,7 @@ package curtains.test
 import android.app.AlertDialog
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
-import curtains.OnActivityCreated
+import curtains.test.utilities.OnActivityCreated
 import curtains.OnWindowFocusChangedListener
 import curtains.onWindowFocusChangedListeners
 import curtains.test.utilities.TestActivity

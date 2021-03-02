@@ -3,7 +3,7 @@ package curtains.test
 import android.app.AlertDialog
 import android.view.View
 import androidx.test.core.app.ActivityScenario
-import curtains.OnActivityCreated
+import curtains.test.utilities.OnActivityCreated
 import curtains.OnContentChangedListener
 import curtains.onContentChangedListeners
 import curtains.test.utilities.CountDownLatchSubject.Companion.assertThat
