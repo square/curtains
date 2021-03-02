@@ -16,7 +16,6 @@ import curtains.onWindowFocusChangedListeners
 import org.junit.Assume
 import java.io.Closeable
 import java.util.concurrent.ArrayBlockingQueue
-import java.util.concurrent.BlockingQueue
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
@@ -69,12 +68,6 @@ fun assumeSdkAtLeast(
 fun CountDownLatch.checkAwait() {
   check(await(30, TimeUnit.SECONDS)) {
     "30 seconds elapsed without count coming down"
-  }
-}
-
-fun <E : Any> BlockingQueue<E>.checkPoll(): E {
-  return checkNotNull(poll(30, TimeUnit.SECONDS)) {
-    "30 seconds elapsed without an element becoming available"
   }
 }
 
@@ -134,7 +127,7 @@ private fun <T : Activity> ActivityScenario<T>.waitForFocus(): Boolean? {
       }
     }
   }
-  return activityHasWindowFocus.poll(10, TimeUnit.SECONDS) // TODO checkPoll
+  return activityHasWindowFocus.poll(10, TimeUnit.SECONDS)
 }
 
 private fun resolveAnr() {
