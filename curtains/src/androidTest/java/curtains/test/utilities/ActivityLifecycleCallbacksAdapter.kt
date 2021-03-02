@@ -1,4 +1,4 @@
-package curtains
+package curtains.test.utilities
 
 import android.app.Activity
 import android.app.Application.ActivityLifecycleCallbacks

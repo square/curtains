@@ -2,8 +2,8 @@ package curtains.test
 
 import androidx.test.core.app.ActivityScenario
 import com.google.common.truth.Truth.assertThat
-import curtains.OnActivityCreated
-import curtains.OnActivityResumed
+import curtains.test.utilities.OnActivityCreated
+import curtains.test.utilities.OnActivityResumed
 import curtains.onNextDraw
 import curtains.test.OnNextDrawTest.CountOrder.ON_DRAW_LISTENER
 import curtains.test.OnNextDrawTest.CountOrder.ON_NEXT_DRAW

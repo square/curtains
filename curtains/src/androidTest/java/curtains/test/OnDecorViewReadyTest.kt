@@ -2,7 +2,7 @@ package curtains.test
 
 import androidx.test.core.app.ActivityScenario
 import com.google.common.truth.Truth.assertThat
-import curtains.OnActivityCreated
+import curtains.test.utilities.OnActivityCreated
 import curtains.onDecorViewReady
 import curtains.test.utilities.CountDownLatchSubject.Companion.assertThat
 import curtains.test.utilities.TestActivity
