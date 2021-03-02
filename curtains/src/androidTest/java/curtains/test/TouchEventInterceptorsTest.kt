@@ -7,7 +7,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.Truth.assertThat
 import curtains.DispatchState
 import curtains.TouchEventInterceptor
-import curtains.TouchEventListener
+import curtains.OnTouchEventListener
 import curtains.test.utilities.CountDownLatchSubject.Companion.assertThat
 import curtains.test.utilities.HasActivityScenarioRule
 import curtains.test.utilities.TestActivity
@@ -26,7 +26,7 @@ class TouchEventInterceptorsTest : HasActivityScenarioRule<TestActivity> {
     val touchEventReceived = CountDownLatch(2)
     onActivity { activity ->
       val cancelEvent = cancelEvent()
-      activity.window.touchEventInterceptors += TouchEventListener { event ->
+      activity.window.touchEventInterceptors += OnTouchEventListener { event ->
         touchEventReceived.countDown()
         assertThat(event).isSameInstanceAs(cancelEvent)
       }

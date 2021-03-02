@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.Truth.assertThat
 import curtains.Curtains
-import curtains.RootViewAddedListener
+import curtains.OnRootViewAddedListener
 import curtains.WindowType.PHONE_WINDOW
 import curtains.WindowType.POPUP_WINDOW
 import curtains.WindowType.TOOLTIP
@@ -83,7 +83,7 @@ class WindowTypeTest : HasActivityScenarioRule<TestActivity> {
       contentView.tooltipText = "Tooltip"
       activity.setContentView(contentView)
 
-      Curtains.rootViewListeners.addUntilClosed(RootViewAddedListener { rootView ->
+      Curtains.onRootViewsChangedListeners.addUntilClosed(OnRootViewAddedListener { rootView ->
         assertThat(rootView.windowType).isEqualTo(TOOLTIP)
       }).use {
         contentView.performLongClick()

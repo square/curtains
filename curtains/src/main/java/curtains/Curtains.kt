@@ -3,7 +3,7 @@ package curtains
 import android.view.View
 import android.view.Window
 import curtains.Curtains.rootViews
-import curtains.Curtains.rootViewListeners
+import curtains.Curtains.onRootViewsChangedListeners
 import curtains.internal.RootViewsSpy
 import curtains.internal.checkMainThread
 import kotlin.LazyThreadSafetyMode.NONE
@@ -25,7 +25,7 @@ import kotlin.LazyThreadSafetyMode.NONE
  * All properties defined in this class must be accessed from the main thread and will otherwise
  * throw an [IllegalStateException].
  *
- * [rootViewListeners] allows apps to have a central place where they can interact with
+ * [onRootViewsChangedListeners] allows apps to have a central place where they can interact with
  * newly added or removed windows. It's exposed as a mutable list to allow apps to reorder or
  * remove listeners added by libraries.
  */
@@ -48,13 +48,13 @@ object Curtains {
 
   /**
    * The list of listeners for newly attached or detached root views. It is safe to update this
-   * list from within [RootViewListener.onRootViewsChanged].
+   * list from within [OnRootViewsChangedListener.onRootViewsChanged].
    *
    * If you only care about the attached state, you can implement the SAM interface
-   * [RootViewAddedListener] which extends [RootViewListener].
+   * [OnRootViewAddedListener] which extends [OnRootViewsChangedListener].
    *
    * If you only care about the detached state, you can implement the SAM interface
-   * [RootViewRemovedListener] which extends [RootViewListener].
+   * [OnRootViewRemovedListener] which extends [OnRootViewsChangedListener].
    *
    * Note: The listeners are invoked immediately when [android.view.WindowManager.addView] and
    * [android.view.WindowManager.removeView] are called. [android.view.WindowManager.addView]
@@ -66,7 +66,7 @@ object Curtains {
    * @throws IllegalStateException if not called from the main thread.
    */
   @JvmStatic
-  val rootViewListeners: MutableList<RootViewListener>
+  val onRootViewsChangedListeners: MutableList<OnRootViewsChangedListener>
     get() {
       checkMainThread()
       return rootViewsSpy.listeners

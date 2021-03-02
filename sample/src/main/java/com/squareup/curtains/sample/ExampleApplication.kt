@@ -3,8 +3,8 @@ package com.squareup.curtains.sample
 import android.app.Application
 import android.util.Log
 import curtains.Curtains
-import curtains.RootViewListener
-import curtains.TouchEventListener
+import curtains.OnRootViewsChangedListener
+import curtains.OnTouchEventListener
 import curtains.phoneWindow
 import curtains.touchEventInterceptors
 import curtains.windowAttachCount
@@ -15,7 +15,7 @@ class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 
-    Curtains.rootViewListeners += RootViewListener { view, added ->
+    Curtains.onRootViewsChangedListeners += OnRootViewsChangedListener { view, added ->
       val verb = if (added) "added" else "removed"
       Log.d(
         "ExampleApplication",
@@ -26,7 +26,7 @@ class ExampleApplication : Application() {
       if (added) {
         view.phoneWindow?.let { window ->
           if (view.windowAttachCount == 0) {
-            window.touchEventInterceptors += TouchEventListener { motionEvent ->
+            window.touchEventInterceptors += OnTouchEventListener { motionEvent ->
               Log.d("ExampleApplication", "$window received $motionEvent")
             }
           }

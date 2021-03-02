@@ -57,7 +57,7 @@ val View.windowType: WindowType
  * The list of touch event interceptors, inserted in [Window.Callback.dispatchTouchEvent].
  *
  * If you only care about logging touch events without intercepting, you can implement the SAM
- * interface [TouchEventListener] which extends [TouchEventInterceptor].
+ * interface [OnTouchEventListener] which extends [TouchEventInterceptor].
  *
  * Calling this has a side effect of wrapping the window callback (on first call).
  *

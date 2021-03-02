@@ -20,7 +20,7 @@ public final class curtains/ActivityLifecycleCallbacksAdapter$DefaultImpls {
 
 public final class curtains/Curtains {
 	public static final field INSTANCE Lcurtains/Curtains;
-	public static final fun getRootViewListeners ()Ljava/util/List;
+	public static final fun getOnRootViewsChangedListeners ()Ljava/util/List;
 	public static final fun getRootViews ()Ljava/util/List;
 }
 
@@ -144,43 +144,61 @@ public abstract interface class curtains/OnContentChangedListener {
 	public abstract fun onContentChanged ()V
 }
 
-public abstract interface class curtains/OnWindowFocusChangedListener {
-	public abstract fun onWindowFocusChanged (Z)V
-}
-
-public abstract interface class curtains/RootViewAddedListener : curtains/RootViewListener {
+public abstract interface class curtains/OnRootViewAddedListener : curtains/OnRootViewsChangedListener {
 	public abstract fun onRootViewAdded (Landroid/view/View;)V
 	public abstract fun onRootViewsChanged (Landroid/view/View;Z)V
 }
 
-public final class curtains/RootViewAddedListener$DefaultImpls {
-	public static fun onRootViewsChanged (Lcurtains/RootViewAddedListener;Landroid/view/View;Z)V
+public final class curtains/OnRootViewAddedListener$DefaultImpls {
+	public static fun onRootViewsChanged (Lcurtains/OnRootViewAddedListener;Landroid/view/View;Z)V
 }
 
-public abstract interface class curtains/RootViewListener {
-	public abstract fun onRootViewsChanged (Landroid/view/View;Z)V
-}
-
-public abstract interface class curtains/RootViewRemovedListener : curtains/RootViewListener {
+public abstract interface class curtains/OnRootViewRemovedListener : curtains/OnRootViewsChangedListener {
 	public abstract fun onRootViewRemoved (Landroid/view/View;)V
 	public abstract fun onRootViewsChanged (Landroid/view/View;Z)V
 }
 
-public final class curtains/RootViewRemovedListener$DefaultImpls {
-	public static fun onRootViewsChanged (Lcurtains/RootViewRemovedListener;Landroid/view/View;Z)V
+public final class curtains/OnRootViewRemovedListener$DefaultImpls {
+	public static fun onRootViewsChanged (Lcurtains/OnRootViewRemovedListener;Landroid/view/View;Z)V
 }
 
-public abstract interface class curtains/TouchEventInterceptor {
-	public abstract fun intercept (Landroid/view/MotionEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
+public abstract interface class curtains/OnRootViewsChangedListener {
+	public abstract fun onRootViewsChanged (Landroid/view/View;Z)V
 }
 
-public abstract interface class curtains/TouchEventListener : curtains/TouchEventInterceptor {
+public abstract interface class curtains/OnTouchEventListener : curtains/TouchEventInterceptor {
 	public abstract fun intercept (Landroid/view/MotionEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
 	public abstract fun onTouchEvent (Landroid/view/MotionEvent;)V
 }
 
-public final class curtains/TouchEventListener$DefaultImpls {
-	public static fun intercept (Lcurtains/TouchEventListener;Landroid/view/MotionEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
+public final class curtains/OnTouchEventListener$DefaultImpls {
+	public static fun intercept (Lcurtains/OnTouchEventListener;Landroid/view/MotionEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
+}
+
+public abstract interface class curtains/OnWindowFocusChangedListener {
+	public abstract fun onWindowFocusChanged (Z)V
+}
+
+public abstract interface class curtains/OnWindowFocusGainedListener : curtains/OnWindowFocusChangedListener {
+	public abstract fun onWindowFocusChanged (Z)V
+	public abstract fun onWindowFocusGained ()V
+}
+
+public final class curtains/OnWindowFocusGainedListener$DefaultImpls {
+	public static fun onWindowFocusChanged (Lcurtains/OnWindowFocusGainedListener;Z)V
+}
+
+public abstract interface class curtains/OnWindowFocusLostListener : curtains/OnWindowFocusChangedListener {
+	public abstract fun onWindowFocusChanged (Z)V
+	public abstract fun onWindowFocusGained ()V
+}
+
+public final class curtains/OnWindowFocusLostListener$DefaultImpls {
+	public static fun onWindowFocusChanged (Lcurtains/OnWindowFocusLostListener;Z)V
+}
+
+public abstract interface class curtains/TouchEventInterceptor {
+	public abstract fun intercept (Landroid/view/MotionEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
 }
 
 public final class curtains/WindowType : java/lang/Enum {
