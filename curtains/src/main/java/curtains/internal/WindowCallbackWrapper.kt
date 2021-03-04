@@ -57,8 +57,11 @@ internal class WindowCallbackWrapper constructor(
       try {
         Class.forName("androidx.appcompat.view.WindowCallbackWrapper")
       } catch (ignored: Throwable) {
-        Class.forName("android.support.v7.view.WindowCallbackWrapper")
-        null
+        try {
+          Class.forName("android.support.v7.view.WindowCallbackWrapper")
+        } catch (ignored: Throwable) {
+          null
+        }
       }
     }
 
