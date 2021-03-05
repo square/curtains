@@ -101,7 +101,7 @@ fun <T : Activity> launchWaitingForFocus(activityClass: KClass<T>): ActivityScen
   val scenario = ActivityScenario.launch(activityClass.java)
   var hasFocus = scenario.waitForFocus()
   if (hasFocus == null) {
-    resolveAnr()
+    // resolveAnr()
   }
   hasFocus = scenario.waitForFocus()
   if (hasFocus == null) {
