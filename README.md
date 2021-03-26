@@ -50,7 +50,7 @@ Curtains.onRootViewsChangedListeners += OnRootViewsChangedListener { view, added
 provides window related extension functions.
 
 New Android windows are created by calling
-`[WindowManager.addView()](https://developer.android.com/reference/android/view/WindowManager)`,
+[WindowManager.addView()](https://developer.android.com/reference/android/view/WindowManager),
 and the Android Framework calls `WindowManager.addView()` for you in many different places.
 `View.windowType` helps figure out what widget added a root view:
 
