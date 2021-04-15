@@ -1,5 +1,6 @@
 package curtains.internal
 
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.Window
 import curtains.DispatchState
@@ -14,6 +15,32 @@ internal class WindowCallbackWrapper constructor(
   private val delegate: Window.Callback,
   private val listeners: WindowListeners
 ) : Window.Callback by delegate {
+
+  override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+    return if (event != null) {
+      val iterator = listeners.keyEventInterceptors.iterator()
+
+      val dispatch: (KeyEvent) -> DispatchState = object : (KeyEvent) -> DispatchState {
+        override fun invoke(interceptedEvent: KeyEvent): DispatchState {
+          return if (iterator.hasNext()) {
+            val nextInterceptor = iterator.next()
+            nextInterceptor.intercept(interceptedEvent, this)
+          } else {
+            DispatchState.from(delegate.dispatchKeyEvent(interceptedEvent))
+          }
+        }
+      }
+
+      if (iterator.hasNext()) {
+        val firstInterceptor = iterator.next()
+        firstInterceptor.intercept(event, dispatch)
+      } else {
+        DispatchState.from(delegate.dispatchKeyEvent(event))
+      } is Consumed
+    } else {
+      delegate.dispatchKeyEvent(event)
+    }
+  }
 
   override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
     return if (event != null) {

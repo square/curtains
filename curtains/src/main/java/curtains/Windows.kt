@@ -70,6 +70,22 @@ val Window.touchEventInterceptors: MutableList<TouchEventInterceptor>
   }
 
 /**
+ * The list of key event interceptors, inserted in [Window.Callback.dispatchKeyEvent].
+ *
+ * If you only care about logging key events without intercepting, you can implement the SAM
+ * interface [OnKeyEventListener] which extends [KeyEventInterceptor].
+ *
+ * Calling this has a side effect of wrapping the window callback (on first call).
+ *
+ * @throws IllegalStateException if not called from the main thread.
+ */
+val Window.keyEventInterceptors: MutableList<KeyEventInterceptor>
+  get() {
+    checkMainThread()
+    return listeners.keyEventInterceptors
+  }
+
+/**
  * The list of content changed listeners, inserted in [Window.Callback.onContentChanged].
  *
  * Calling this has a side effect of wrapping the window callback (on first call).

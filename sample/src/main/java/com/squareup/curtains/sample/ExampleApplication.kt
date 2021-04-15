@@ -3,8 +3,10 @@ package com.squareup.curtains.sample
 import android.app.Application
 import android.util.Log
 import curtains.Curtains
+import curtains.OnKeyEventListener
 import curtains.OnRootViewsChangedListener
 import curtains.OnTouchEventListener
+import curtains.keyEventInterceptors
 import curtains.phoneWindow
 import curtains.touchEventInterceptors
 import curtains.windowAttachCount
@@ -28,6 +30,9 @@ class ExampleApplication : Application() {
           if (view.windowAttachCount == 0) {
             window.touchEventInterceptors += OnTouchEventListener { motionEvent ->
               Log.d("ExampleApplication", "$window received $motionEvent")
+            }
+            window.keyEventInterceptors += OnKeyEventListener { keyEvent ->
+              Log.d("ExampleApplication", "$window received $keyEvent")
             }
           }
         }

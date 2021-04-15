@@ -15,8 +15,21 @@ public final class curtains/DispatchState$Consumed : curtains/DispatchState {
 public final class curtains/DispatchState$NotConsumed : curtains/DispatchState {
 }
 
+public abstract interface class curtains/KeyEventInterceptor {
+	public abstract fun intercept (Landroid/view/KeyEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
+}
+
 public abstract interface class curtains/OnContentChangedListener {
 	public abstract fun onContentChanged ()V
+}
+
+public abstract interface class curtains/OnKeyEventListener : curtains/KeyEventInterceptor {
+	public abstract fun intercept (Landroid/view/KeyEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
+	public abstract fun onKeyEvent (Landroid/view/KeyEvent;)V
+}
+
+public final class curtains/OnKeyEventListener$DefaultImpls {
+	public static fun intercept (Lcurtains/OnKeyEventListener;Landroid/view/KeyEvent;Lkotlin/jvm/functions/Function1;)Lcurtains/DispatchState;
 }
 
 public abstract interface class curtains/OnRootViewAddedListener : curtains/OnRootViewsChangedListener {
@@ -87,6 +100,7 @@ public final class curtains/WindowType : java/lang/Enum {
 }
 
 public final class curtains/WindowsKt {
+	public static final fun getKeyEventInterceptors (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getOnContentChangedListeners (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getOnWindowFocusChangedListeners (Landroid/view/Window;)Ljava/util/List;
 	public static final fun getPhoneWindow (Landroid/view/View;)Landroid/view/Window;
