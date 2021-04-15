@@ -26,7 +26,7 @@ Add the `curtains` dependency to your library or app's `build.gradle` file:
 
 ```gradle
 dependencies {
-  implementation 'com.squareup.curtains:curtains:1.0.1'
+  implementation 'com.squareup.curtains:curtains:1.1'
 }
 ```
 
@@ -78,6 +78,14 @@ Once you have a `android.view.Window` instance, you can easily intercept touch e
 
 ```kotlin
 window.touchEventInterceptors += TouchEventInterceptor { event, dispatch ->
+  dispatch(event)
+}
+```
+
+Or intercept key events:
+
+```kotlin
+window.keyEventInterceptors += KeyEventInterceptor { event, dispatch ->
   dispatch(event)
 }
 ```
