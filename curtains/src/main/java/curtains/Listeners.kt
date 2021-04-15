@@ -1,5 +1,6 @@
 package curtains
 
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.Window
@@ -93,6 +94,44 @@ fun interface OnTouchEventListener : TouchEventInterceptor {
   ): DispatchState {
     onTouchEvent(motionEvent)
     return dispatch(motionEvent)
+  }
+}
+
+/**
+ * Interceptor added to [Window.keyEventInterceptors].
+ *
+ * If you only care about logging key events without intercepting, consider implementing
+ * [OnKeyEventListener] instead.
+ */
+fun interface KeyEventInterceptor {
+  /**
+   * Called when [android.view.Window.Callback.dispatchKeyEvent] is called.
+   *
+   * Implementations should either return [DispatchState.Consumed] (which intercepts the touch
+   * event) or return the result of calling [dispatch]. Implementations can also pass through
+   * a copy of [keyEvent].
+   */
+  fun intercept(
+    keyEvent: KeyEvent,
+    dispatch: (KeyEvent) -> DispatchState
+  ): DispatchState
+}
+
+/**
+ * Listener added to [Window.keyEventInterceptors].
+ */
+fun interface OnKeyEventListener : KeyEventInterceptor {
+  /**
+   * Called when [android.view.Window.Callback.dispatchKeyEvent] is called.
+   */
+  fun onKeyEvent(keyEvent: KeyEvent)
+
+  override fun intercept(
+    keyEvent: KeyEvent,
+    dispatch: (KeyEvent) -> DispatchState
+  ): DispatchState {
+    onKeyEvent(keyEvent)
+    return dispatch(keyEvent)
   }
 }
 
