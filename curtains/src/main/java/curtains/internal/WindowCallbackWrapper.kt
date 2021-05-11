@@ -5,6 +5,8 @@ import android.view.MotionEvent
 import android.view.Window
 import curtains.DispatchState
 import curtains.DispatchState.Consumed
+import java.lang.ref.WeakReference
+import java.util.WeakHashMap
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
@@ -12,9 +14,10 @@ import kotlin.LazyThreadSafetyMode.NONE
  * for interesting events.
  */
 internal class WindowCallbackWrapper constructor(
-  private val delegate: Window.Callback,
-  private val listeners: WindowListeners
+  private val delegate: Window.Callback
 ) : Window.Callback by delegate {
+
+  private val listeners = WindowListeners()
 
   override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
     return if (event != null) {
@@ -102,30 +105,46 @@ internal class WindowCallbackWrapper constructor(
       }
     }
 
+    private val (Window.Callback?).isJetpackWrapper: Boolean
+      get() = jetpackWrapperClass?.isInstance(this) ?: false
+
+    private val (Window.Callback?).jetpackWrapped: Window.Callback?
+      get() = jetpackWrappedField!![this] as Window.Callback?
+
+    /**
+     * Note: Ideally this would be a map of Window to WindowCallbackWrapper, however
+     * the values of a WeakHashMap are strongly held and the callback chain typically holds a
+     * strong ref back to the window (e.g. Activity is a Callback). To prevent leaks, we keep
+     * a weak ref to the callback. The callback weak ref won't be cleared too early as the callback
+     * is also held as part of the window callback chain.
+     */
+    private val callbackCache = WeakHashMap<Window, WeakReference<WindowCallbackWrapper>>()
+
     val Window.listeners: WindowListeners
       get() {
-        return when (val currentCallback = callback) {
+        val existingWrapper = callbackCache[this]?.get()
+        if (existingWrapper != null) {
+          return existingWrapper.listeners
+        }
+
+        val currentCallback = callback
+        return if (currentCallback == null) {
           // We expect a window to always have a default callback
           // that we can delegate to, but who knows what apps can be up to.
-          null -> WindowListeners()
-          is WindowCallbackWrapper -> currentCallback.listeners
-          else -> {
-            WindowListeners().apply {
-              callback = WindowCallbackWrapper(currentCallback, this)
-            }
-          }
+          WindowListeners()
+        } else {
+          val windowCallbackWrapper = WindowCallbackWrapper(currentCallback)
+          callback = windowCallbackWrapper
+          callbackCache[this] = WeakReference(windowCallbackWrapper)
+          windowCallbackWrapper.listeners
         }
       }
-
-    private fun Window.Callback.canUnwrapFromJetpack(): Boolean {
-      return jetpackWrappedField != null && jetpackWrapperClass!!.isInstance(this)
-    }
 
     tailrec fun Window.Callback?.unwrap(): Window.Callback? {
       return when {
         this == null -> null
         this is WindowCallbackWrapper -> delegate.unwrap()
-        canUnwrapFromJetpack() -> (jetpackWrappedField!![this] as Window.Callback?).unwrap()
+        isJetpackWrapper -> jetpackWrapped.unwrap()
         else -> this
       }
     }
