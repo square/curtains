@@ -48,7 +48,10 @@ object Curtains {
 
   /**
    * The list of listeners for newly attached or detached root views. It is safe to update this
-   * list from within [OnRootViewsChangedListener.onRootViewsChanged].
+   * list from within [OnRootViewsChangedListener.onRootViewsChanged], if called back on the main
+   * thread. New windows are typically added on the main thread, but it can also happen from a
+   * different thread by calling Dialog.show() from a background thread (and of course Google
+   * Mobile Ads does exactly that).
    *
    * If you only care about the attached state, you can implement the SAM interface
    * [OnRootViewAddedListener] which extends [OnRootViewsChangedListener].
