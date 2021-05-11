@@ -1,20 +1,24 @@
 package curtains
 
 import android.os.Build
+import android.view.FrameMetrics
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.windowAttachCount
+import androidx.annotation.RequiresApi
 import curtains.WindowType.PHONE_WINDOW
 import curtains.WindowType.POPUP_WINDOW
 import curtains.WindowType.TOAST
 import curtains.WindowType.TOOLTIP
 import curtains.WindowType.UNKNOWN
+import curtains.internal.CurrentFrameMetricsListener
 import curtains.internal.NextDrawListener.Companion.onNextDraw
 import curtains.internal.WindowCallbackWrapper.Companion.listeners
 import curtains.internal.WindowCallbackWrapper.Companion.unwrap
 import curtains.internal.WindowSpy
 import curtains.internal.checkMainThread
+import curtains.internal.frameMetricsHandler
 
 /**
  * If this view is part of the view hierarchy from a [android.app.Activity], [android.app.Dialog] or
@@ -176,6 +180,41 @@ fun Window.onNextDraw(onNextDraw: () -> Unit) {
   onDecorViewReady { decorView ->
     decorView.onNextDraw(onNextDraw)
   }
+}
+
+/**
+ * This is a helper extension method to simplify the usage of
+ * [android.view.Window.addOnFrameMetricsAvailableListener] when trying to get the frame metrics
+ * only once, for the next frame.
+ *
+ * The provided [onNextFrameMetrics] callback will run some time after the next frame is rendered,
+ * with [FrameMetrics] information. The callback does not run on the main thread but on a
+ * background handler thread (always the same single thread).
+ *
+ * Usage:
+ *
+ * ```
+ * Choreographer.getInstance().postFrameCallback { frameTimeNanos ->
+ *   window.onNextFrameMetrics(frameTimeNanos) { frameMetrics ->
+ *   }
+ * }
+ * ```
+ *
+ *  You should follow the recommendations from
+ * [android.view.Window.OnFrameMetricsAvailableListener.onFrameMetricsAvailable], particularly:
+ * It is highly recommended that clients copy the passed in FrameMetrics within this method and
+ * defer additional computation or storage to another thread to avoid unnecessarily dropping
+ * reports.
+ *
+ * The report producer cannot wait for the consumer to complete, so it's possible that the next
+ * frame metrics is dropped. To detect this, [frameTimeNanos] is used as a key to identify the
+ * current frame, and compared against [android.view.FrameMetrics.VSYNC_TIMESTAMP] to ensure
+ * [onNextFrameMetrics] doesn't run if the next frame metrics were skipped.
+ */
+@RequiresApi(26)
+fun Window.onNextFrameMetrics(frameTimeNanos: Long, onNextFrameMetrics: (FrameMetrics) -> Unit) {
+  val frameMetricsListener = CurrentFrameMetricsListener(frameTimeNanos, onNextFrameMetrics)
+  addOnFrameMetricsAvailableListener(frameMetricsListener, frameMetricsHandler)
 }
 
 /**

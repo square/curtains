@@ -110,5 +110,6 @@ public final class curtains/WindowsKt {
 	public static final fun getWrappedCallback (Landroid/view/Window$Callback;)Landroid/view/Window$Callback;
 	public static final fun onDecorViewReady (Landroid/view/Window;Lkotlin/jvm/functions/Function1;)V
 	public static final fun onNextDraw (Landroid/view/Window;Lkotlin/jvm/functions/Function0;)V
+	public static final fun onNextFrameMetrics (Landroid/view/Window;JLkotlin/jvm/functions/Function1;)V
 }
 
