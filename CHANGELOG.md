@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Version 1.2
+-------------
+
+_2021-5-11_
+
+* New window extension function: `window.onNextFrameMetrics(frameTimeNanos){}` (based on [this blog](https://dev.to/pyricau/tap-response-time-jetpack-navigation-4738)).
+* Fixed bug: unless added last, the window callback would always be replaced. This didn't play well with fragments calling `AppCompatActivity.setSupportActionBar()` all the time (see [this AppCompat issue](https://issuetracker.google.com/issues/186791590)).
+
 
 Version 1.1
 -------------
