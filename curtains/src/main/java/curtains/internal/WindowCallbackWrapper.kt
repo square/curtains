@@ -15,7 +15,7 @@ import kotlin.LazyThreadSafetyMode.NONE
  */
 internal class WindowCallbackWrapper constructor(
   private val delegate: Window.Callback
-) : Window.Callback by delegate {
+) : FixedWindowCallback(delegate) {
 
   private val listeners = WindowListeners()
 
