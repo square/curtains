@@ -26,7 +26,7 @@ Add the `curtains` dependency to your library or app's `build.gradle` file:
 
 ```gradle
 dependencies {
-  implementation 'com.squareup.curtains:curtains:1.1'
+  implementation 'com.squareup.curtains:curtains:1.2.1'
 }
 ```
 
