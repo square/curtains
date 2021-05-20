@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.2.1
+-------------
+
+_2021-5-20_
+
+* Fixed crash when showing a non support overflow menu. This crash is caused by an incorrect `@NonNull` annotation in AOSP ([issue]( https://issuetracker.google.com/issues/188568911), [PR](https://github.com/square/curtains/pull/22)).
+
 Version 1.2
 -------------
 
