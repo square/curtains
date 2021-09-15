@@ -2,10 +2,9 @@ package curtains
 
 import android.view.View
 import android.view.Window
-import curtains.Curtains.rootViews
 import curtains.Curtains.onRootViewsChangedListeners
+import curtains.Curtains.rootViews
 import curtains.internal.RootViewsSpy
-import curtains.internal.checkMainThread
 import kotlin.LazyThreadSafetyMode.NONE
 
 /**
@@ -22,8 +21,7 @@ import kotlin.LazyThreadSafetyMode.NONE
  *
  * [rootViews] returns a snapshot of the currently attached root views.
  *
- * All properties defined in this class must be accessed from the main thread and will otherwise
- * throw an [IllegalStateException].
+ * All properties defined in this class should be accessed from the main thread.
  *
  * [onRootViewsChangedListeners] allows apps to have a central place where they can interact with
  * newly added or removed windows. It's exposed as a mutable list to allow apps to reorder or
@@ -37,12 +35,10 @@ object Curtains {
 
   /**
    * @returns a copy of the list of root views held by [android.view.WindowManagerGlobal].
-   * @throws IllegalStateException if not called from the main thread.
    */
   @JvmStatic
   val rootViews: List<View>
     get() {
-      checkMainThread()
       return rootViewsSpy.copyRootViewList()
     }
 
@@ -65,13 +61,10 @@ object Curtains {
    * next view traversal.
    *
    * No-op below Android API 19, i.e. any listener added here will never be triggered.
-   *
-   * @throws IllegalStateException if not called from the main thread.
    */
   @JvmStatic
   val onRootViewsChangedListeners: MutableList<OnRootViewsChangedListener>
     get() {
-      checkMainThread()
       return rootViewsSpy.listeners
     }
 }
