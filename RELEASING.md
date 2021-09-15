@@ -97,6 +97,11 @@ sed -i '' 's/VERSION_NAME={NEW_VERSION}-SNAPSHOT/VERSION_NAME={NEW_VERSION}/' gr
 mate CHANGELOG.md
 ```	
 
+* Update the released version in the readme
+```
+mate README.md
+```	
+
 * Commit all local changes
 ```bash
 git commit -am "Prepare {NEW_VERSION} release"
