@@ -44,40 +44,6 @@ Install GitHub CLI
 brew install gh
 ```
 
-Install jq, a CLI Json processor
-
-```bash
-brew install jq
-```
-
-Set up aliases for milestone management:
-
-```bash
-gh alias set listOpenMilestones "api graphql -F owner=':owner' -F name=':repo' -f query='
-    query ListOpenMilestones(\$name: String\!, \$owner: String\!) {
-        repository(owner: \$owner, name: \$name) {
-            milestones(first: 100, states: OPEN) {
-                nodes {
-                    title
-                    number
-                    description
-                    dueOn
-                    url
-                    state
-                    closed
-                    closedAt
-                    updatedAt
-                }
-            }
-        }
-    }
-'"
-
-gh alias set --shell createMilestone "gh api --method POST repos/:owner/:repo/milestones --input - | jq '{ html_url: .html_url, state: .state, created_at: .created_at }'"
-
-gh alias set --shell closeMilestone "echo '{\"state\": \"closed\"}' | gh api --method PATCH repos/:owner/:repo/milestones/\$1 --input - | jq '{ html_url: .html_url, state: .state, closed_at: .closed_at }'"
-```
-
 ## Releasing
 
 * Create a local release branch from `main`
