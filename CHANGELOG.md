@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.2.2
+-------------
+
+_2021-9-15_
+
+* Stop throwing when not on main thread. While Curtains APIs should be used from the main thread, there are a number edge cases as well as bugs in consuming SDKs / apps and the Android Framework SDKs that can trigger calls from the wrong thread, and in many cases there isn't much developers can do, so Curtains is relaxing the constraint and doing a best effort approach.
+
 Version 1.2.1
 -------------
 
