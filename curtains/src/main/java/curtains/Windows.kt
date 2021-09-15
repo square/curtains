@@ -1,3 +1,4 @@
+
 package curtains
 
 import android.os.Build
@@ -17,7 +18,6 @@ import curtains.internal.NextDrawListener.Companion.onNextDraw
 import curtains.internal.WindowCallbackWrapper.Companion.listeners
 import curtains.internal.WindowCallbackWrapper.Companion.unwrap
 import curtains.internal.WindowSpy
-import curtains.internal.checkMainThread
 import curtains.internal.frameMetricsHandler
 
 /**
@@ -27,18 +27,14 @@ import curtains.internal.frameMetricsHandler
  *
  * Note: this property is called [phoneWindow] because the only implementation of [Window] is
  * the internal class android.view.PhoneWindow.
- *
- * @throws IllegalStateException if not called from the main thread.
  */
 val View.phoneWindow: Window?
   get() {
-    checkMainThread()
     return WindowSpy.pullWindow(rootView)
   }
 
 val View.windowType: WindowType
   get() {
-    checkMainThread()
     val rootView = rootView
     if (WindowSpy.attachedToPhoneWindow(rootView)) {
       return PHONE_WINDOW
@@ -64,12 +60,9 @@ val View.windowType: WindowType
  * interface [OnTouchEventListener] which extends [TouchEventInterceptor].
  *
  * Calling this has a side effect of wrapping the window callback (on first call).
- *
- * @throws IllegalStateException if not called from the main thread.
  */
 val Window.touchEventInterceptors: MutableList<TouchEventInterceptor>
   get() {
-    checkMainThread()
     return listeners.touchEventInterceptors
   }
 
@@ -80,12 +73,9 @@ val Window.touchEventInterceptors: MutableList<TouchEventInterceptor>
  * interface [OnKeyEventListener] which extends [KeyEventInterceptor].
  *
  * Calling this has a side effect of wrapping the window callback (on first call).
- *
- * @throws IllegalStateException if not called from the main thread.
  */
 val Window.keyEventInterceptors: MutableList<KeyEventInterceptor>
   get() {
-    checkMainThread()
     return listeners.keyEventInterceptors
   }
 
@@ -93,12 +83,9 @@ val Window.keyEventInterceptors: MutableList<KeyEventInterceptor>
  * The list of content changed listeners, inserted in [Window.Callback.onContentChanged].
  *
  * Calling this has a side effect of wrapping the window callback (on first call).
- *
- * @throws IllegalStateException if not called from the main thread.
  */
 val Window.onContentChangedListeners: MutableList<OnContentChangedListener>
   get() {
-    checkMainThread()
     return listeners.onContentChangedListeners
   }
 
@@ -106,12 +93,9 @@ val Window.onContentChangedListeners: MutableList<OnContentChangedListener>
  * The list of window focus changed listeners, inserted in [Window.Callback.onWindowFocusChanged].
  *
  * Calling this has a side effect of wrapping the window callback (on first call).
- *
- * @throws IllegalStateException if not called from the main thread.
  */
 val Window.onWindowFocusChangedListeners: MutableList<OnWindowFocusChangedListener>
   get() {
-    checkMainThread()
     return listeners.onWindowFocusChangedListeners
   }
 
@@ -129,11 +113,8 @@ val Window.onWindowFocusChangedListeners: MutableList<OnWindowFocusChangedListen
  *
  * Calling this has a side effect of wrapping the window callback (on first call), unless
  * the decor view was already set.
- *
- * @throws IllegalStateException if not called from the main thread.
  */
 fun Window.onDecorViewReady(onDecorViewReady: (View) -> Unit) {
-  checkMainThread()
   val decorViewOrNull = peekDecorView()
   if (decorViewOrNull != null) {
     onDecorViewReady(decorViewOrNull)
@@ -170,8 +151,6 @@ fun Window.onDecorViewReady(onDecorViewReady: (View) -> Unit) {
  * the decor view was already set.
  *
  * No-op below Android API 16.
- *
- * @throws IllegalStateException if not called from the main thread.
  */
 fun Window.onNextDraw(onNextDraw: () -> Unit) {
   if (Build.VERSION.SDK_INT < 16) {
@@ -220,12 +199,9 @@ fun Window.onNextFrameMetrics(frameTimeNanos: Long, onNextFrameMetrics: (FrameMe
 /**
  * Returns [View.getWindowAttachCount] which has protected visibility and is normally only
  * accessible from within view subclasses.
- *
- * @throws IllegalStateException if not called from the main thread.
  */
 val View.windowAttachCount: Int
   get() {
-    checkMainThread()
     return windowAttachCount(this)
   }
 
@@ -242,7 +218,4 @@ val View.windowAttachCount: Int
  * happen.
  */
 val Window.Callback?.wrappedCallback: Window.Callback?
-  get() {
-    checkMainThread()
-    return unwrap()
-  }
+  get() = unwrap()

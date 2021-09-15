@@ -120,23 +120,27 @@ internal class WindowCallbackWrapper constructor(
      */
     private val callbackCache = WeakHashMap<Window, WeakReference<WindowCallbackWrapper>>()
 
+    private val listenersLock = Any()
+
     val Window.listeners: WindowListeners
       get() {
-        val existingWrapper = callbackCache[this]?.get()
-        if (existingWrapper != null) {
-          return existingWrapper.listeners
-        }
+        synchronized(listenersLock) {
+          val existingWrapper = callbackCache[this]?.get()
+          if (existingWrapper != null) {
+            return existingWrapper.listeners
+          }
 
-        val currentCallback = callback
-        return if (currentCallback == null) {
-          // We expect a window to always have a default callback
-          // that we can delegate to, but who knows what apps can be up to.
-          WindowListeners()
-        } else {
-          val windowCallbackWrapper = WindowCallbackWrapper(currentCallback)
-          callback = windowCallbackWrapper
-          callbackCache[this] = WeakReference(windowCallbackWrapper)
-          windowCallbackWrapper.listeners
+          val currentCallback = callback
+          return if (currentCallback == null) {
+            // We expect a window to always have a default callback
+            // that we can delegate to, but who knows what apps can be up to.
+            WindowListeners()
+          } else {
+            val windowCallbackWrapper = WindowCallbackWrapper(currentCallback)
+            callback = windowCallbackWrapper
+            callbackCache[this] = WeakReference(windowCallbackWrapper)
+            windowCallbackWrapper.listeners
+          }
         }
       }
 
