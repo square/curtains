@@ -45,13 +45,6 @@ val View.windowType: WindowType
       UNKNOWN
     } else {
       val title = windowLayoutParams.title
-      // use id rather than 'Tooltip' because of i18n
-      val tooltipStringId = Resources.getSystem().getIdentifier("tooltip_popup_title", "string", "android")
-      val tooltipString = try {
-        context.getString(tooltipStringId)
-      } catch (e: Resources.NotFoundException) {
-        "Tooltip"
-      }
       when {
         title == "Toast" -> TOAST
         title == tooltipString -> TOOLTIP
@@ -60,6 +53,16 @@ val View.windowType: WindowType
       }
     }
   }
+
+val tooltipString by lazy(LazyThreadSafetyMode.NONE) {
+  // use id rather than 'Tooltip' because of i18n
+  val tooltipStringId = Resources.getSystem().getIdentifier("tooltip_popup_title", "string", "android")
+  try {
+    Resources.getSystem().getString(tooltipStringId)
+  } catch (e: Resources.NotFoundException) {
+    "Tooltip"
+  }
+}
 
 /**
  * The list of touch event interceptors, inserted in [Window.Callback.dispatchTouchEvent].
