@@ -54,7 +54,8 @@ val View.windowType: WindowType
     }
   }
 
-val tooltipString by lazy(LazyThreadSafetyMode.NONE) {
+// see [com.android.internal.view.TooltipPopup]
+private val tooltipString by lazy(LazyThreadSafetyMode.NONE) {
   // use id rather than 'Tooltip' because of i18n
   val tooltipStringId = Resources.getSystem().getIdentifier("tooltip_popup_title", "string", "android")
   try {
