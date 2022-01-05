@@ -1,6 +1,7 @@
 
 package curtains
 
+import android.content.res.Resources
 import android.os.Build
 import android.view.FrameMetrics
 import android.view.View
@@ -44,9 +45,11 @@ val View.windowType: WindowType
       UNKNOWN
     } else {
       val title = windowLayoutParams.title
+      // use id rather than 'Tooltip' because of i18n
+      val tooltipStringId = Resources.getSystem().getIdentifier("tooltip_popup_title", "string", "android")
       when {
         title == "Toast" -> TOAST
-        title == "Tooltip" -> TOOLTIP
+        title == context.getString(tooltipStringId) -> TOOLTIP
         title.startsWith("PopupWindow:") -> POPUP_WINDOW
         else -> UNKNOWN
       }
