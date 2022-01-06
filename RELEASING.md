@@ -80,7 +80,7 @@ git push origin v{NEW_VERSION} && \
 ./gradlew closeAndReleaseRepository && \
 git checkout main && \
 git pull && \
-git merge --no-ff release_{NEW_VERSION} && \
+git merge --no-ff --no-edit release_{NEW_VERSION} && \
 sed -i '' 's/VERSION_NAME={NEW_VERSION}/VERSION_NAME={NEXT_VERSION}-SNAPSHOT/' gradle.properties && \
 git commit -am "Prepare for next development iteration" && \
 git push && \
