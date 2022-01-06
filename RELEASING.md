@@ -84,7 +84,7 @@ git merge --no-ff release_{NEW_VERSION} && \
 sed -i '' 's/VERSION_NAME={NEW_VERSION}/VERSION_NAME={NEXT_VERSION}-SNAPSHOT/' gradle.properties && \
 git commit -am "Prepare for next development iteration" && \
 git push && \
-gh release create v{NEW_VERSION} --title v{NEW_VERSION} --notes 'See [Change Log](https://github.com/square/curtains/blob/main/CHANGELOG.md)' && \
+gh release create v{NEW_VERSION} --title v{NEW_VERSION} --notes 'See [Change Log](https://github.com/square/curtains/blob/main/CHANGELOG.md)'
 ```
 
 * Wait for the release to be available [on Maven Central](https://repo1.maven.org/maven2/com/squareup/curtains/curtains/).
