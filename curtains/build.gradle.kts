@@ -3,8 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
   id("com.android.library")
   kotlin("android")
-  id("com.vanniktech.maven.publish")
 }
+
+apply(from = rootProject.file(".buildscript/configure-maven-publish.gradle"))
 
 android {
   compileSdkVersion(30)

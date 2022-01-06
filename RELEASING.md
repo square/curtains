@@ -55,71 +55,35 @@ git checkout -b release_{NEW_VERSION}
 
 * Update `VERSION_NAME` in `gradle.properties` (remove `-SNAPSHOT`)
 ```gradle
-sed -i '' 's/VERSION_NAME={NEW_VERSION}-SNAPSHOT/VERSION_NAME={NEW_VERSION}/' gradle.properties
+sed -i '' 's/VERSION_NAME={PREVIOUS_NEW_VERSION}-SNAPSHOT/VERSION_NAME={NEW_VERSION}/' gradle.properties
 ```
 
 * Update the changelog
 ```
 mate CHANGELOG.md
-```	
+```
 
 * Update the released version in the readme
 ```
 mate README.md
-```	
-
-* Commit all local changes
-```bash
-git commit -am "Prepare {NEW_VERSION} release"
 ```
 
-* Perform a clean build
-```bash
-./gradlew clean
-./gradlew build
-```
+* Release
 
-* Create a tag and push it
 ```bash
-git tag v{NEW_VERSION}
-git push origin v{NEW_VERSION}
-```
-
-* Upload the artifacts to Sonatype OSS Nexus
-```bash
-./gradlew uploadArchives --no-daemon --no-parallel
-```
-
-* Release to Maven Central
-    * Login to Sonatype OSS Nexus: https://oss.sonatype.org/
-    * Click on **Staging Repositories**
-    * Scroll to the bottom, you should see an entry named `comsquareup-XXXX`
-    * Check the box next to the `comsquareup-XXXX` entry, click **Close** then **Confirm**
-    * Wait a bit, hit **Refresh**, until the *Status* for that column changes to *Closed*.
-    * Check the box next to the `comsquareup-XXXX` entry, click **Release** then **Confirm**
-* Merge the release branch to main
-```bash
-git checkout main
-git pull
-git merge --no-ff release_{NEW_VERSION}
-```
-* Update `VERSION_NAME` in `gradle.properties` (increase version and add `-SNAPSHOT`)
-```gradle
-sed -i '' 's/VERSION_NAME={NEW_VERSION}/VERSION_NAME={NEXT_VERSION}-SNAPSHOT/' gradle.properties
-```
-
-* Commit your changes
-```bash
-git commit -am "Prepare for next development iteration"
-```
-
-* Push your changes
-```bash
-git push
-```
-
-* Create a new release
-```bash
+git commit -am "Prepare {NEW_VERSION} release" && \
+./gradlew clean && \
+./gradlew build && \
+git tag v{NEW_VERSION} && \
+git push origin v{NEW_VERSION} && \
+./gradlew publish --no-daemon --no-parallel && \
+./gradlew closeAndReleaseRepository && \
+git checkout main && \
+git pull && \
+git merge --no-ff release_{NEW_VERSION} && \
+sed -i '' 's/VERSION_NAME={NEW_VERSION}/VERSION_NAME={NEXT_VERSION}-SNAPSHOT/' gradle.properties && \
+git commit -am "Prepare for next development iteration" && \
+git push && \
 gh release create v{NEW_VERSION} --title v{NEW_VERSION} --notes 'See [Change Log](https://github.com/square/curtains/blob/main/CHANGELOG.md)'
 ```
 

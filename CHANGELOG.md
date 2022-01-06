@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.2.3
+-------------
+
+_2022-01-06_
+
+* [#30](https://github.com/square/curtains/pull/30) Detecting window tooltip type when language isn't English.
+
 Version 1.2.2
 -------------
 
