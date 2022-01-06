@@ -1,6 +1,7 @@
 
 package curtains
 
+import android.content.res.Resources
 import android.os.Build
 import android.view.FrameMetrics
 import android.view.View
@@ -46,12 +47,23 @@ val View.windowType: WindowType
       val title = windowLayoutParams.title
       when {
         title == "Toast" -> TOAST
-        title == "Tooltip" -> TOOLTIP
+        title == tooltipString -> TOOLTIP
         title.startsWith("PopupWindow:") -> POPUP_WINDOW
         else -> UNKNOWN
       }
     }
   }
+
+// see [com.android.internal.view.TooltipPopup]
+private val tooltipString by lazy(LazyThreadSafetyMode.NONE) {
+  // use id rather than 'Tooltip' because of i18n
+  val tooltipStringId = Resources.getSystem().getIdentifier("tooltip_popup_title", "string", "android")
+  try {
+    Resources.getSystem().getString(tooltipStringId)
+  } catch (e: Resources.NotFoundException) {
+    "Tooltip"
+  }
+}
 
 /**
  * The list of touch event interceptors, inserted in [Window.Callback.dispatchTouchEvent].
