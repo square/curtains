@@ -120,6 +120,9 @@ internal class WindowCallbackWrapper constructor(
      */
     private val callbackCache = WeakHashMap<Window, WeakReference<WindowCallbackWrapper>>()
 
+    // window callback wrapper has a weak ref to window. keys have a weak ref to window. window
+    // has a strong ref to callbacks.
+
     private val listenersLock = Any()
 
     val Window.listeners: WindowListeners
