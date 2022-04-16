@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+
+Version 1.2.4
+-------------
+
+_2022-04-16_
+
+* [#32](https://github.com/square/curtains/issues/32) Add Proguard rule for AppCompat WindowCallbackWrapper.
+* [#35](https://github.com/square/curtains/pull/35) Detect app compat window tooltip.
+
 Version 1.2.3
 -------------
 
