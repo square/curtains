@@ -48,6 +48,8 @@ val View.windowType: WindowType
       when {
         title == "Toast" -> TOAST
         title == tooltipString -> TOOLTIP
+        // App compat tooltip uses the class simple name.
+        title == "TooltipPopup" -> TOOLTIP
         title.startsWith("PopupWindow:") -> POPUP_WINDOW
         else -> UNKNOWN
       }
