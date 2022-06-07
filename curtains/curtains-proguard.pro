@@ -6,3 +6,6 @@
     android.view.Window$Callback mWrapped;
 }
 
+-keepclassmembers class android.view.JavaViewSpy {
+    static int windowAttachCount(android.view.View);
+}
