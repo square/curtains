@@ -16,6 +16,14 @@ android {
     targetSdkVersion(30)
     applicationId = "com.squareup.curtains.sample"
   }
+
+  buildTypes {
+    getByName("release") {
+      signingConfig = signingConfigs.getByName("debug")
+      minifyEnabled(true)
+      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+    }
+  }
 }
 
 dependencies {
