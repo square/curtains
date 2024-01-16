@@ -37,6 +37,9 @@ val View.phoneWindow: Window?
 val View.windowType: WindowType
   get() {
     val rootView = rootView
+    if (rootView::class.java.name == "androidx.compose.ui.window.PopupLayout") {
+      return POPUP_WINDOW
+    }
     if (WindowSpy.attachedToPhoneWindow(rootView)) {
       return PHONE_WINDOW
     }
