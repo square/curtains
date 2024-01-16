@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 1.2.5
+-------------
+
+_2024-01-16_
+
+* [70146b2](https://github.com/square/curtains/commit/70146b26d65de1f0647298b4623fc9d0558a54d8) Report Compose popup window as POPUP_WINDOW.
+* [#36](https://github.com/square/curtains/issues/36) Fix missing windowAttachCount method after minification.
 
 Version 1.2.4
 -------------
