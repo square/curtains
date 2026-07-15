@@ -17,6 +17,15 @@ class ExampleApplication : Application() {
   override fun onCreate() {
     super.onCreate()
 
+    // --- Repro: a second window-observing SDK installs its own mViews hook BEFORE Curtains. ---
+    RivalWindowObserver.install()
+
+    // Concise Curtains-side log for the before/after comparison.
+    Curtains.onRootViewsChangedListeners += OnRootViewsChangedListener { view, added ->
+      Log.d("CURTAINS", "root view ${if (added) "added" else "removed"}: $view")
+    }
+    // --- end repro ---
+
     Curtains.onRootViewsChangedListeners += OnRootViewsChangedListener { view, added ->
       val verb = if (added) "added" else "removed"
       Log.d(
